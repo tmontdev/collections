@@ -43,3 +43,48 @@ func (l *List[T]) Push(elements ...T) Iterable[T] {
 func (l *List[T]) Clone() Iterable[T] {
 	return NewList[T](l.Elements()...)
 }
+
+func (l *List[T]) FirstElement() T {
+	return l.Elements()[0]
+}
+
+func (l *List[T]) First() *T {
+	return &l.Elements()[0]
+}
+
+func (l *List[T]) LastElement() T {
+	return l.Elements()[l.Length()-1]
+}
+
+func (l *List[T]) Last() *T {
+	return &l.Elements()[l.Length()-1]
+}
+
+func (l *List[T]) FirstIndexWhere(handler PredicateHandler[T]) int {
+	for i, v := range l.Elements() {
+		if handler(v) {
+			return i
+		}
+	}
+	return -1
+}
+
+func (l *List[T]) LastIndexWhere(handler PredicateHandler[T]) int {
+	idx := -1
+	for i, v := range l.Elements() {
+		if handler(v) {
+			idx = i
+		}
+	}
+	return idx
+}
+
+func (l *List[T]) IndexWhere(handler PredicateHandler[T]) Iterable[int] {
+	list := NewList[int]()
+	for i, v := range l.Elements() {
+		if handler(v) {
+			list.Push(i)
+		}
+	}
+	return list
+}

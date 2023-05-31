@@ -156,12 +156,12 @@ var atCases = []testCase[any]{
 		runnable: func(t *testing.T, list Iterable[any], parameters []any) any {
 			n := list.ElementAt(0)
 			if n != 1 {
-				t.Error("List.ElementAt is differente from espected")
+				t.Error("List.ElementAt is different from expected")
 			}
 			n = 4
 			a := list.ElementAt(0)
 			if a != 1 {
-				t.Error("List.ElementAt is differente from espected")
+				t.Error("List.ElementAt is different from expected")
 			}
 			return a != n
 		},

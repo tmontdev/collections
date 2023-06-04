@@ -218,7 +218,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "List.FirstIndexWhere.Even",
-		input:       emptyList.Clone(),
+		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
@@ -229,13 +229,36 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "List.FirstIndexWhere.Odd",
-		input:       emptyList.Clone(),
+		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
 			return list.FirstIndexWhere(func(a any) bool {
-				return a.(int)%2 == 0
-			}) == 1
+				return a.(int)%2 == 1
+			}) == 0
+		},
+	},
+	{
+		name:        "List.LastIndexWhere.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.LastIndexWhere(func(a any) bool {
+				return a.(int)%2 == 1
+			}) == 2
+		},
+	},
+	{
+		name:        "List.IndexWhere.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.IndexWhere(func(a any) bool {
+				return a.(int)%2 == 1
+			})
+			return odds.ElementAt(0) == 0 && odds.ElementAt(1) == 2
 		},
 	},
 }

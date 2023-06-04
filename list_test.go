@@ -168,6 +168,101 @@ var atCases = []testCase[any]{
 	},
 }
 
+var indexCases = []testCase[bool]{
+	{
+		name:        "List.FirstElement.Empty",
+		input:       emptyList.Clone(),
+		expected:    false,
+		expectPanic: true,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.FirstElement() == 1
+		},
+	},
+	{
+		name:        "List.First.Empty",
+		input:       emptyList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.First() == nil
+		},
+	},
+	{
+		name:        "List.LastElement.Empty",
+		input:       emptyList.Clone(),
+		expected:    false,
+		expectPanic: true,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.LastElement() == 1
+		},
+	},
+	{
+		name:        "List.Last.Empty",
+		input:       emptyList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.Last() == nil
+		},
+	},
+	{
+		name:        "List.FirstIndexWhere.NotSatisfied",
+		input:       emptyList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.FirstIndexWhere(func(a any) bool {
+				return true
+			}) == -1
+		},
+	},
+	{
+		name:        "List.FirstIndexWhere.Even",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.FirstIndexWhere(func(a any) bool {
+				return a.(int)%2 == 0
+			}) == 1
+		},
+	},
+	{
+		name:        "List.FirstIndexWhere.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.FirstIndexWhere(func(a any) bool {
+				return a.(int)%2 == 1
+			}) == 0
+		},
+	},
+	{
+		name:        "List.LastIndexWhere.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.LastIndexWhere(func(a any) bool {
+				return a.(int)%2 == 1
+			}) == 2
+		},
+	},
+	{
+		name:        "List.IndexWhere.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.IndexWhere(func(a any) bool {
+				return a.(int)%2 == 1
+			})
+			return odds.ElementAt(0) == 0 && odds.ElementAt(1) == 2
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		CaseRunner[int](t, v)
@@ -183,5 +278,11 @@ func TestEmpty(t *testing.T) {
 func TestAt(t *testing.T) {
 	for _, v := range atCases {
 		CaseRunner[any](t, v)
+	}
+}
+
+func TestIndexes(t *testing.T) {
+	for _, v := range indexCases {
+		CaseRunner[bool](t, v)
 	}
 }

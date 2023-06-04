@@ -26,4 +26,32 @@ type Iterable[T any] interface {
 
 	// Clone returns an identical Iterable from the original
 	Clone() Iterable[T]
+
+	// FirstElement returns the first element in the Iterable
+	// if isEmpty, panics
+	FirstElement() T
+
+	// First returns the pointer of the first element in the Iterable
+	// if isEmpty, nil will be returned
+	First() *T
+
+	// LastElement returns the last element in the Iterable
+	// if isEmpty, panics
+	LastElement() T
+
+	// Last returns the pointer of the last element in the Iterable
+	// if isEmpty, nil will be returned
+	Last() *T
+
+	// FirstIndexWhere returns the index of the first element witch satisfies the predicate
+	// if no element satisfies the predicate, -1 will be returned
+	FirstIndexWhere(handler PredicateHandler[T]) int
+
+	// LastIndexWhere returns the index of the last element witch satisfies the predicate
+	// if no element satisfies the predicate, -1 will be returned
+	LastIndexWhere(handler PredicateHandler[T]) int
+
+	// IndexWhere returns an Iterable[int] for all element index witch satisfies the predicate
+	// if no element satisfies the predicate, an empty Iterable will be returned
+	IndexWhere(handler PredicateHandler[T]) Iterable[int]
 }

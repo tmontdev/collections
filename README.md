@@ -10,6 +10,7 @@
   - [Release Notes](#release-notes)
     - [v0.0.1](#v001)
     - [v0.0.2](#v002)
+    - [v0.0.3](#v003)
 
 <!-- TOC -->
 
@@ -39,3 +40,6 @@ go get github.com/tmontdev/iterable
 
 ### v0.0.2
 Added new methods: **Push, Clone, FirstElement, First, LastElement, Last, FirstIndexWhere, LastIndexWhere, IndexWhere**
+
+### v0.0.3
+Added new methods: **Where**

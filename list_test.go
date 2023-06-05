@@ -168,6 +168,32 @@ var atCases = []testCase[any]{
 	},
 }
 
+var whereCases = []testCase[bool]{
+	{
+		name:        "List.Where.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.Where(func(candidate any) bool {
+				return candidate.(int)%2 == 1
+			})
+			return odds.ElementAt(0).(int) == 1 && odds.ElementAt(1).(int) == 3 && odds.Length() == 2
+		},
+	},
+	{
+		name:        "List.Where.Even",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.Where(func(candidate any) bool {
+				return candidate.(int)%2 == 0
+			})
+			return odds.ElementAt(0).(int) == 2 && odds.Length() == 1
+		},
+	},
+}
 var indexCases = []testCase[bool]{
 	{
 		name:        "List.FirstElement.Empty",
@@ -283,6 +309,12 @@ func TestAt(t *testing.T) {
 
 func TestIndexes(t *testing.T) {
 	for _, v := range indexCases {
+		CaseRunner[bool](t, v)
+	}
+}
+
+func TestWhere(t *testing.T) {
+	for _, v := range whereCases {
 		CaseRunner[bool](t, v)
 	}
 }

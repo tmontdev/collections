@@ -54,4 +54,8 @@ type Iterable[T any] interface {
 	// IndexWhere returns an Iterable[int] for all element index witch satisfies the predicate
 	// if no element satisfies the predicate, an empty Iterable will be returned
 	IndexWhere(handler PredicateHandler[T]) Iterable[int]
+
+	// Where returns an Iterable with all the elements witch satisfies the predicate.
+	// if no element satisfies the predicate, an empty Iterable will be returned
+	Where(handler PredicateHandler[T]) Iterable[T]
 }

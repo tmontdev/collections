@@ -125,3 +125,12 @@ func (l *List[T]) Where(handler PredicateHandler[T]) Iterable[T] {
 	}
 	return selected
 }
+
+// Map iterates over the elements of the List calling MapHandler, and return a new List with the results.
+func (l *List[T]) Map(handler MapHandler[T]) Iterable[any] {
+	mapped := NewList[any]()
+	for _, v := range l.Elements() {
+		mapped.Push(handler(v))
+	}
+	return mapped
+}

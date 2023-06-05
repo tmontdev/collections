@@ -168,32 +168,6 @@ var atCases = []testCase[any]{
 	},
 }
 
-var whereCases = []testCase[bool]{
-	{
-		name:        "List.Where.Odd",
-		input:       oneTwoThreeList.Clone(),
-		expected:    true,
-		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
-			odds := list.Where(func(candidate any) bool {
-				return candidate.(int)%2 == 1
-			})
-			return odds.ElementAt(0).(int) == 1 && odds.ElementAt(1).(int) == 3 && odds.Length() == 2
-		},
-	},
-	{
-		name:        "List.Where.Even",
-		input:       oneTwoThreeList.Clone(),
-		expected:    true,
-		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
-			odds := list.Where(func(candidate any) bool {
-				return candidate.(int)%2 == 0
-			})
-			return odds.ElementAt(0).(int) == 2 && odds.Length() == 1
-		},
-	},
-}
 var indexCases = []testCase[bool]{
 	{
 		name:        "List.FirstElement.Empty",
@@ -288,6 +262,46 @@ var indexCases = []testCase[bool]{
 		},
 	},
 }
+var whereCases = []testCase[bool]{
+	{
+		name:        "List.Where.Odd",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.Where(func(candidate any) bool {
+				return candidate.(int)%2 == 1
+			})
+			return odds.ElementAt(0).(int) == 1 && odds.ElementAt(1).(int) == 3 && odds.Length() == 2
+		},
+	},
+	{
+		name:        "List.Where.Even",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			odds := list.Where(func(candidate any) bool {
+				return candidate.(int)%2 == 0
+			})
+			return odds.ElementAt(0).(int) == 2 && odds.Length() == 1
+		},
+	},
+}
+var mapCases = []testCase[bool]{
+	{
+		name:        "List.Map.String",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			strs := list.Map(func(candidate any) any {
+				return fmt.Sprint(candidate)
+			})
+			return strs.ElementAt(0).(string) == "1" && strs.ElementAt(1).(string) == "2" && strs.ElementAt(2).(string) == "3" && strs.Length() == 3
+		},
+	},
+}
 
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
@@ -315,6 +329,12 @@ func TestIndexes(t *testing.T) {
 
 func TestWhere(t *testing.T) {
 	for _, v := range whereCases {
+		CaseRunner[bool](t, v)
+	}
+}
+
+func TestMap(t *testing.T) {
+	for _, v := range mapCases {
 		CaseRunner[bool](t, v)
 	}
 }

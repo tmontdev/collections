@@ -58,4 +58,7 @@ type Iterable[T any] interface {
 	// Where returns an Iterable with all the elements witch satisfies the predicate.
 	// if no element satisfies the predicate, an empty Iterable will be returned
 	Where(handler PredicateHandler[T]) Iterable[T]
+
+	// Map iterates over the elements of the Iterable calling MapHandler, and return a new Iterable with the results.
+	Map(handler MapHandler[T]) Iterable[any]
 }

@@ -43,3 +43,6 @@ Added new methods: **Push, Clone, FirstElement, First, LastElement, Last, FirstI
 
 ### v0.0.3
 Added new methods: **Where**
+
+### v0.0.4
+Added new methods: **Map**

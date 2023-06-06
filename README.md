@@ -50,3 +50,4 @@ Added new methods: **Map**
 
 ### v0.1.0
 Added new methods: **Reduce, Every, Some, None, Pop, Shift**
+String representation

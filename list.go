@@ -135,6 +135,8 @@ func (l *List[T]) Map(handler MapHandler[T]) Iterable[any] {
 	return mapped
 }
 
+// Reduce executes the Reducer for each element from the list with the given accumulator, and each result will be accumulator for the next
+// The final result will be returned
 func (l *List[T]) Reduce(reducer Reducer[T], accumulator any) any {
 	for i, v := range l.Elements() {
 		accumulator = reducer(accumulator, v, i)

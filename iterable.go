@@ -62,5 +62,7 @@ type Iterable[T any] interface {
 	// Map iterates over the elements of the Iterable calling MapHandler, and return a new Iterable with the results.
 	Map(handler MapHandler[T]) Iterable[any]
 
+	// Reduce executes the Reducer for each element from the list with the given accumulator, and each result will be accumulator for the next
+	// The final result will be returned
 	Reduce(reducer Reducer[T], accumulator any) any
 }

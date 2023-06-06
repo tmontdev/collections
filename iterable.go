@@ -74,4 +74,7 @@ type Iterable[T any] interface {
 
 	// None returns true no element in the Iterable satisfy the predicate
 	None(handler PredicateHandler[T]) bool
+
+	// Pop removes the last element from the Iterable and returns itself
+	Pop() Iterable[T]
 }

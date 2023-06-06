@@ -461,6 +461,31 @@ var noneCases = []testCase[bool]{
 	},
 }
 
+var popCases = []testCase[bool]{
+	{
+		name:        "List.Pop",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			popped := list.Pop()
+			return popped.ElementAt(0) == 1 && popped.ElementAt(1) == 2 && popped.Length() == 2
+
+		},
+	},
+	{
+		name:        "List.Pop.Double",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			popped := list.Pop().Pop()
+			return popped.ElementAt(0) == 1 && popped.Length() == 1
+
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		caseRunner[int](t, v)

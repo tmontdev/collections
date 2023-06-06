@@ -19,27 +19,27 @@ var emptyList = NewList[any]()
 
 var oneTwoThreeList = NewList[any](1, 2, 3)
 
-func CaseRunner[T comparable](t *testing.T, c testCase[T]) {
-	println("CaseRunner: Running test case: ", c.name, "...")
+func caseRunner[T comparable](t *testing.T, c testCase[T]) {
+	println("caseRunner: Running test case: ", c.name, "...")
 	panicked := false
 	defer func() {
 		if r := recover(); r != nil {
 			if c.expectPanic {
 				panicked = true
-				fmt.Printf("CaseRunner: test case %v panics as expected. %v\n", c.name, r)
+				fmt.Printf("caseRunner: test case %v panics as expected. %v\n", c.name, r)
 			}
 			return
 		}
 	}()
 	result := c.runnable(t, c.input, c.parameters)
 	if c.expectPanic != panicked {
-		t.Errorf("CaseRunner: %v: Expected panic %v. Got: %v", c.name, c.expectPanic, panicked)
+		t.Errorf("caseRunner: %v: Expected panic %v. Got: %v", c.name, c.expectPanic, panicked)
 	}
 	if !c.nilTypeComparison && fmt.Sprintf("%v%v", result, c.expected) == "<nil><nil>" {
 		return
 	}
 	if result != c.expected && !c.expectPanic {
-		t.Errorf("CaseRunner: %v: Expected %v. Got: %v", c.name, c.expected, result)
+		t.Errorf("caseRunner: %v: Expected %v. Got: %v", c.name, c.expected, result)
 	}
 	return
 }
@@ -329,44 +329,86 @@ var reduceCases = []testCase[bool]{
 	},
 }
 
+var everyCases = []testCase[bool]{
+	{
+		name:        "List.Every.lt",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.Every(func(candidate any) bool {
+				return candidate.(int) < 4
+			})
+		},
+	},
+	{
+		name:        "List.Every.gt",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.Every(func(candidate any) bool {
+				return candidate.(int) > 0
+			})
+		},
+	},
+	{
+		name:        "List.Every.gt.false",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.Every(func(candidate any) bool {
+				return candidate.(int) > 1
+			})
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
-		CaseRunner[int](t, v)
+		caseRunner[int](t, v)
 	}
 }
 
 func TestEmpty(t *testing.T) {
 	for _, v := range emptyCases {
-		CaseRunner[bool](t, v)
+		caseRunner[bool](t, v)
 	}
 }
 
 func TestAt(t *testing.T) {
 	for _, v := range atCases {
-		CaseRunner[any](t, v)
+		caseRunner[any](t, v)
 	}
 }
 
 func TestIndexes(t *testing.T) {
 	for _, v := range indexCases {
-		CaseRunner[bool](t, v)
+		caseRunner[bool](t, v)
 	}
 }
 
 func TestWhere(t *testing.T) {
 	for _, v := range whereCases {
-		CaseRunner[bool](t, v)
+		caseRunner[bool](t, v)
 	}
 }
 
 func TestMap(t *testing.T) {
 	for _, v := range mapCases {
-		CaseRunner[bool](t, v)
+		caseRunner[bool](t, v)
 	}
 }
 
 func TestReduce(t *testing.T) {
 	for _, v := range reduceCases {
-		CaseRunner[bool](t, v)
+		caseRunner[bool](t, v)
+	}
+}
+
+func TestEvery(t *testing.T) {
+	for _, v := range everyCases {
+		caseRunner[bool](t, v)
 	}
 }

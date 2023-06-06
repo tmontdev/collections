@@ -65,4 +65,7 @@ type Iterable[T any] interface {
 	// Reduce executes the Reducer for each element from the list with the given accumulator, and each result will be accumulator for the next
 	// The final result will be returned
 	Reduce(reducer Reducer[T], accumulator any) any
+
+	// Every returns true if every element in the Iterable satisfy the predicate
+	Every(handler PredicateHandler[T]) bool
 }

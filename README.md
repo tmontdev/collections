@@ -50,5 +50,5 @@ Added new methods: **Where**
 Added new methods: **Map**
 
 ### v0.1.0
-Added new methods: **Reduce, Every, Some, None, Pop, Shift**
+Added new methods: **Reduce, Every, Some, None, Pop, Shift, Set**
 String representation

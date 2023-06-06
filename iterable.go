@@ -81,6 +81,9 @@ type Iterable[T any] interface {
 	// Shift removes the first element from the Iterable and returns itself
 	Shift() Iterable[T]
 
+	// Set sets the given element in the given index, and returns itself
+	Set(index int, element T) Iterable[T]
+
 	// String returns a string representation of the Iterable
 	String() string
 }

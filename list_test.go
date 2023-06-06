@@ -511,9 +511,23 @@ var shiftCases = []testCase[bool]{
 	},
 }
 
+var setCases = []testCase[bool]{
+	{
+		name:        "List.Set",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			set := list.Set(1, 4)
+			return set.Length() == list.Length() && set.ElementAt(0) == list.ElementAt(0) && set.ElementAt(1) == 4 && set.ElementAt(2) == list.ElementAt(2)
+
+		},
+	},
+}
+
 var stringCases = []testCase[string]{
 	{
-		name:        "List.Shift.Double",
+		name:        "List.String",
 		input:       oneTwoThreeList.Clone(),
 		expected:    fmt.Sprint(oneTwoThreeList.Elements()),
 		expectPanic: false,
@@ -598,5 +612,11 @@ func TestShift(t *testing.T) {
 func TestString(t *testing.T) {
 	for _, v := range stringCases {
 		caseRunner[string](t, v)
+	}
+}
+
+func TestSet(t *testing.T) {
+	for _, v := range setCases {
+		caseRunner[bool](t, v)
 	}
 }

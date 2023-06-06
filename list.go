@@ -154,6 +154,7 @@ func (l *List[T]) Every(handler PredicateHandler[T]) bool {
 	return true
 }
 
+// Some returns true if at least one element in the List satisfy the predicate
 func (l *List[T]) Some(handler PredicateHandler[T]) bool {
 	for _, v := range l.Elements() {
 		if handler(v) {
@@ -161,4 +162,14 @@ func (l *List[T]) Some(handler PredicateHandler[T]) bool {
 		}
 	}
 	return false
+}
+
+// None returns true no element in the List satisfy the predicate
+func (l *List[T]) None(handler PredicateHandler[T]) bool {
+	for _, v := range l.Elements() {
+		if handler(v) {
+			return false
+		}
+	}
+	return true
 }

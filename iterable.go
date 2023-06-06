@@ -71,4 +71,7 @@ type Iterable[T any] interface {
 
 	// Some returns true if at least one element in the Iterable satisfy the predicate
 	Some(handler PredicateHandler[T]) bool
+
+	// None returns true no element in the Iterable satisfy the predicate
+	None(handler PredicateHandler[T]) bool
 }

@@ -80,4 +80,7 @@ type Iterable[T any] interface {
 
 	// Shift removes the first element from the Iterable and returns itself
 	Shift() Iterable[T]
+
+	// String returns a string representation of the Iterable
+	String() string
 }

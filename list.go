@@ -1,5 +1,7 @@
 package iterable
 
+import "fmt"
+
 // NewList returns a new List with the given elements
 func NewList[T any](elements ...T) *List[T] {
 	l := &List[T]{}
@@ -184,4 +186,9 @@ func (l *List[T]) Pop() Iterable[T] {
 func (l *List[T]) Shift() Iterable[T] {
 	*l = l.Elements()[1:l.Length()]
 	return l
+}
+
+// String returns a string representation of the List
+func (l *List[T]) String() string {
+	return fmt.Sprint(l.Elements())
 }

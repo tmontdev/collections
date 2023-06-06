@@ -174,8 +174,14 @@ func (l *List[T]) None(handler PredicateHandler[T]) bool {
 	return true
 }
 
-// Pop removes the last element from the Iterable and returns itself
+// Pop removes the last element from the List and returns itself
 func (l *List[T]) Pop() Iterable[T] {
 	*l = l.Elements()[0 : l.Length()-1]
+	return l
+}
+
+// Shift removes the first element from the List and returns itself
+func (l *List[T]) Shift() Iterable[T] {
+	*l = l.Elements()[1:l.Length()]
 	return l
 }

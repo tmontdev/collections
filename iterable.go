@@ -77,4 +77,7 @@ type Iterable[T any] interface {
 
 	// Pop removes the last element from the Iterable and returns itself
 	Pop() Iterable[T]
+
+	// Shift removes the first element from the Iterable and returns itself
+	Shift() Iterable[T]
 }

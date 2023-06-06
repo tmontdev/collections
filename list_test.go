@@ -465,7 +465,7 @@ var popCases = []testCase[bool]{
 	{
 		name:        "List.Pop",
 		input:       oneTwoThreeList.Clone(),
-		expected:    false,
+		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
 			popped := list.Pop()
@@ -476,11 +476,36 @@ var popCases = []testCase[bool]{
 	{
 		name:        "List.Pop.Double",
 		input:       oneTwoThreeList.Clone(),
-		expected:    false,
+		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
 			popped := list.Pop().Pop()
 			return popped.ElementAt(0) == 1 && popped.Length() == 1
+
+		},
+	},
+}
+
+var shiftCases = []testCase[bool]{
+	{
+		name:        "List.Shift",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			popped := list.Shift()
+			return popped.ElementAt(0) == 2 && popped.ElementAt(1) == 3 && popped.Length() == 2
+
+		},
+	},
+	{
+		name:        "List.Shift.Double",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			popped := list.Shift().Shift()
+			return popped.ElementAt(0) == 3 && popped.Length() == 1
 
 		},
 	},
@@ -542,6 +567,18 @@ func TestSome(t *testing.T) {
 
 func TestNone(t *testing.T) {
 	for _, v := range noneCases {
+		caseRunner[bool](t, v)
+	}
+}
+
+func TestPop(t *testing.T) {
+	for _, v := range popCases {
+		caseRunner[bool](t, v)
+	}
+}
+
+func TestShift(t *testing.T) {
+	for _, v := range shiftCases {
 		caseRunner[bool](t, v)
 	}
 }

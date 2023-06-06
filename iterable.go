@@ -68,4 +68,7 @@ type Iterable[T any] interface {
 
 	// Every returns true if every element in the Iterable satisfy the predicate
 	Every(handler PredicateHandler[T]) bool
+
+	// Some returns true if at least one element in the Iterable satisfy the predicate
+	Some(handler PredicateHandler[T]) bool
 }

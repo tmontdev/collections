@@ -153,3 +153,12 @@ func (l *List[T]) Every(handler PredicateHandler[T]) bool {
 	}
 	return true
 }
+
+func (l *List[T]) Some(handler PredicateHandler[T]) bool {
+	for _, v := range l.Elements() {
+		if handler(v) {
+			return true
+		}
+	}
+	return false
+}

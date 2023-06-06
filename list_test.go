@@ -303,6 +303,32 @@ var mapCases = []testCase[bool]{
 	},
 }
 
+var reduceCases = []testCase[bool]{
+	{
+		name:        "List.Reduce.Sum",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.Reduce(func(acc any, candidate any, idx int) any {
+				return acc.(int) + candidate.(int)
+			}, 0) == 6
+		},
+	},
+	{
+		name:        "List.Reduce.Map",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			strs := list.Reduce(func(acc any, candidate any, idx int) any {
+				return acc.(*List[string]).Push(fmt.Sprint(candidate))
+			}, NewList[string]()).(*List[string])
+			return strs.ElementAt(0) == "1" && strs.ElementAt(1) == "2" && strs.ElementAt(2) == "3" && strs.Length() == 3
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		CaseRunner[int](t, v)
@@ -335,6 +361,12 @@ func TestWhere(t *testing.T) {
 
 func TestMap(t *testing.T) {
 	for _, v := range mapCases {
+		CaseRunner[bool](t, v)
+	}
+}
+
+func TestReduce(t *testing.T) {
+	for _, v := range reduceCases {
 		CaseRunner[bool](t, v)
 	}
 }

@@ -413,6 +413,54 @@ var someCases = []testCase[bool]{
 	},
 }
 
+var noneCases = []testCase[bool]{
+	{
+		name:        "List.None.lt",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.None(func(candidate any) bool {
+				return candidate.(int) < 4
+			})
+		},
+	},
+	{
+		name:        "List.None.gt",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.None(func(candidate any) bool {
+				return candidate.(int) > 0
+			})
+		},
+	},
+	{
+		name:        "List.None.eq",
+		input:       oneTwoThreeList.Clone(),
+		expected:    false,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.None(func(candidate any) bool {
+				return candidate.(int) == 1
+			})
+		},
+	},
+
+	{
+		name:        "List.None.eq.false",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			return list.None(func(candidate any) bool {
+				return candidate.(int) == 10
+			})
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		caseRunner[int](t, v)
@@ -463,6 +511,12 @@ func TestEvery(t *testing.T) {
 
 func TestSome(t *testing.T) {
 	for _, v := range someCases {
+		caseRunner[bool](t, v)
+	}
+}
+
+func TestNone(t *testing.T) {
+	for _, v := range noneCases {
 		caseRunner[bool](t, v)
 	}
 }

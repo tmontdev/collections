@@ -143,3 +143,13 @@ func (l *List[T]) Reduce(reducer Reducer[T], accumulator any) any {
 	}
 	return accumulator
 }
+
+// Every returns true if every element in the List satisfy the predicate
+func (l *List[T]) Every(handler PredicateHandler[T]) bool {
+	for _, v := range l.Elements() {
+		if !handler(v) {
+			return false
+		}
+	}
+	return true
+}

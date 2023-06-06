@@ -188,6 +188,15 @@ func (l *List[T]) Shift() Iterable[T] {
 	return l
 }
 
+// Set sets the given element in the given index, and returns itself
+// if the given index is not yet filled, panics
+func (l *List[T]) Set(index int, element T) Iterable[T] {
+	l.ElementAt(index)
+	at := l.At(index)
+	*at = element
+	return l
+}
+
 // String returns a string representation of the List
 func (l *List[T]) String() string {
 	return fmt.Sprint(l.Elements())

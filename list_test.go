@@ -537,6 +537,19 @@ var stringCases = []testCase[string]{
 	},
 }
 
+var intervalCases = []testCase[bool]{
+	{
+		name:        "List.Interval",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+			interval := list.Interval(0, 1)
+			return interval.ElementAt(0).(int) == 1 && interval.ElementAt(1).(int) == 2
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		caseRunner[int](t, v)
@@ -617,6 +630,12 @@ func TestString(t *testing.T) {
 
 func TestSet(t *testing.T) {
 	for _, v := range setCases {
+		caseRunner[bool](t, v)
+	}
+}
+
+func TestInterval(t *testing.T) {
+	for _, v := range intervalCases {
 		caseRunner[bool](t, v)
 	}
 }

@@ -1,54 +1,66 @@
 [![Go Documentation](https://godocs.io/github.com/tmontdev/iterable?status.svg)](https://godocs.io/github.com/tmontdev/iterable)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tmontdev/iterable)](https://goreportcard.com/report/github.com/tmontdev/iterable)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=tmontdev_iterable&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=tmontdev_iterable)
+[![Sourcegraph](https://sourcegraph.com/github.com/tmontdev/iterable/-/badge.svg)](https://sourcegraph.com/github.com/tmontdev/iterable?badge)
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=tmontdev.iterable)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tmontdev/iterable/blob/main/LICENSE)
 
 <!-- TOC -->
 
 - [Iterable](#iterable)
-  - [Project Status](#project-status)
   - [Install](#install)
-  - [Usage ](#usage-)
+  - [Usage](#usage-)
   - [Release Notes](#release-notes)
-    - [v0.0.1](#v001)
-    - [v0.0.2](#v002)
-    - [v0.0.3](#v003)
-    - [v0.0.4](#v004)
     - [v0.1.0](#v010)
+    - [v0.2.0](#v020)
 
 <!-- TOC -->
 
 # Iterable
-
 **Iterable** package provides a simple interface to handle data collections in golang.
 
-## Project Status
-
-**Currently, in Alpha**
-
 ## Install
-
 ```shell
 go get github.com/tmontdev/iterable
 ```
 
 ## Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/iterable?status.svg)](https://godocs.io/github.com/tmontdev/iterable)
+
 **To get get usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/iterable)**
 
 ## Release Notes
 
-### v0.0.1
-
-**Iterable** interface with the primary methods: **Length, IsEmpty, IsNotEmpty, At, ElementAt, Elements**.
-**List** implementation
-
-### v0.0.2
-Added new methods: **Push, Clone, FirstElement, First, LastElement, Last, FirstIndexWhere, LastIndexWhere, IndexWhere**
-
-### v0.0.3
-Added new methods: **Where**
-
-### v0.0.4
-Added new methods: **Map**
-
 ### v0.1.0
-Added new methods: **Reduce, Every, Some, None, Pop, Shift, Set**
-String representation
+
+**Iterable** interface with the primary methods:
+
+- **Length**
+- **IsEmpty**
+- **IsNotEmpty**
+- **At**
+- **ElementAt**
+- **Elements**
+- **Push**
+- **Clone**
+- **FirstElement**
+- **First**
+- **LastElement**
+- **FirstIndexWhere**
+- **LastIndexWhere**
+- **IndexWhere**
+- **Where**
+- **Map**
+- **Reduce**
+- **Every**
+- **Some**
+- **None**
+- **Pop**
+- **Shift**
+- **Set**
+
+**List** implementation with 100% test coverage
+
+### v0.2.0
+
+**Iterable** got new methods:
+- **Interval**

@@ -84,6 +84,9 @@ type Iterable[T any] interface {
 	// Set sets the given element in the given index, and returns itself
 	Set(index int, element T) Iterable[T]
 
+	// Interval returns a new Iterable with all elements between from and to given indexes
+	Interval(from, to int) Iterable[T]
+
 	// String returns a string representation of the Iterable
 	String() string
 }

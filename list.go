@@ -197,6 +197,11 @@ func (l *List[T]) Set(index int, element T) Iterable[T] {
 	return l
 }
 
+// Interval returns a new Iterable with all elements between from and to given indexes
+func (l *List[T]) Interval(from, to int) Iterable[T] {
+	return NewList[T](l.Elements()[from : to+1]...)
+}
+
 // String returns a string representation of the List
 func (l *List[T]) String() string {
 	return fmt.Sprint(l.Elements())

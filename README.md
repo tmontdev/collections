@@ -13,6 +13,7 @@
   - [Release Notes](#release-notes)
     - [v0.1.0](#v010)
     - [v0.2.0](#v020)
+    - [v0.3.0](#v030)
 
 <!-- TOC -->
 
@@ -67,3 +68,9 @@ go get github.com/tmontdev/collection
 **collection** got new methods:
 
 - **Interval**
+
+### v0.3.0
+
+**collection** got new methods:
+
+- **Sort**

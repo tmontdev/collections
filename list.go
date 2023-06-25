@@ -1,4 +1,4 @@
-package iterable
+package collection
 
 import "fmt"
 
@@ -28,7 +28,7 @@ func (l *List[T]) IsNotEmpty() bool {
 // At returns the pointer of the element in the given index from the List
 // If there is no element in the index, nil will be returned
 func (l *List[T]) At(i int) (at *T) {
-	if l.Length()-1 <= i {
+	if l.Length()-1 < i || i < 0 {
 		return
 	}
 	at = &l.Elements()[i]
@@ -47,43 +47,43 @@ func (l *List[T]) Elements() []T {
 }
 
 // Push add the given elements in the List, and returns itself
-func (l *List[T]) Push(elements ...T) Iterable[T] {
+func (l *List[T]) Push(elements ...T) Collection[T] {
 	*l = append(l.Elements(), elements...)
 	return l
 }
 
 // Clone returns an identical List from the original
-func (l *List[T]) Clone() Iterable[T] {
+func (l *List[T]) Clone() Collection[T] {
 	return NewList[T](l.Elements()...)
 }
 
 // FirstElement returns the first element in the List
 // if isEmpty, panics
 func (l *List[T]) FirstElement() T {
-	return l.Elements()[0]
+	return l.ElementAt(0)
 }
 
 // First returns the pointer of the first element in the List
 // if isEmpty, nil will be returned
 func (l *List[T]) First() *T {
-	return &l.Elements()[0]
+	return l.At(0)
 }
 
 // LastElement returns the last element in the List
 // if isEmpty, panics
 func (l *List[T]) LastElement() T {
-	return l.Elements()[l.Length()-1]
+	return l.ElementAt(l.Length() - 1)
 }
 
 // Last returns the pointer of the last element in the List
 // if isEmpty, nil will be returned
 func (l *List[T]) Last() *T {
-	return &l.Elements()[l.Length()-1]
+	return l.At(l.Length() - 1)
 }
 
 // FirstIndexWhere returns the index of the first element witch satisfies the predicate
 // if no element satisfies the predicate, -1 will be returned
-func (l *List[T]) FirstIndexWhere(handler PredicateHandler[T]) int {
+func (l *List[T]) FirstIndexWhere(handler Predicate[T]) int {
 	for i, v := range l.Elements() {
 		if handler(v) {
 			return i
@@ -94,7 +94,7 @@ func (l *List[T]) FirstIndexWhere(handler PredicateHandler[T]) int {
 
 // LastIndexWhere returns the index of the last element witch satisfies the predicate
 // if no element satisfies the predicate, -1 will be returned
-func (l *List[T]) LastIndexWhere(handler PredicateHandler[T]) int {
+func (l *List[T]) LastIndexWhere(handler Predicate[T]) int {
 	idx := -1
 	for i, v := range l.Elements() {
 		if handler(v) {
@@ -106,7 +106,7 @@ func (l *List[T]) LastIndexWhere(handler PredicateHandler[T]) int {
 
 // IndexWhere returns a new List[int] for all element index witch satisfies the predicate
 // if no element satisfies the predicate, an empty List will be returned
-func (l *List[T]) IndexWhere(handler PredicateHandler[T]) Iterable[int] {
+func (l *List[T]) IndexWhere(handler Predicate[T]) Collection[int] {
 	list := NewList[int]()
 	for i, v := range l.Elements() {
 		if handler(v) {
@@ -118,7 +118,7 @@ func (l *List[T]) IndexWhere(handler PredicateHandler[T]) Iterable[int] {
 
 // Where returns a new List with all the elements witch satisfies the predicate.
 // if no element satisfies the predicate, an empty List will be returned
-func (l *List[T]) Where(handler PredicateHandler[T]) Iterable[T] {
+func (l *List[T]) Where(handler Predicate[T]) Collection[T] {
 	selected := NewList[T]()
 	for _, v := range l.Elements() {
 		if handler(v) {
@@ -128,8 +128,8 @@ func (l *List[T]) Where(handler PredicateHandler[T]) Iterable[T] {
 	return selected
 }
 
-// Map iterates over the elements of the List calling MapHandler, and return a new List with the results.
-func (l *List[T]) Map(handler MapHandler[T]) Iterable[any] {
+// Map iterates over the elements of the List calling Mapper, and return a new List with the results.
+func (l *List[T]) Map(handler Mapper[T]) Collection[any] {
 	mapped := NewList[any]()
 	for _, v := range l.Elements() {
 		mapped.Push(handler(v))
@@ -147,7 +147,7 @@ func (l *List[T]) Reduce(reducer Reducer[T], accumulator any) any {
 }
 
 // Every returns true if every element in the List satisfy the predicate
-func (l *List[T]) Every(handler PredicateHandler[T]) bool {
+func (l *List[T]) Every(handler Predicate[T]) bool {
 	for _, v := range l.Elements() {
 		if !handler(v) {
 			return false
@@ -157,7 +157,7 @@ func (l *List[T]) Every(handler PredicateHandler[T]) bool {
 }
 
 // Some returns true if at least one element in the List satisfy the predicate
-func (l *List[T]) Some(handler PredicateHandler[T]) bool {
+func (l *List[T]) Some(handler Predicate[T]) bool {
 	for _, v := range l.Elements() {
 		if handler(v) {
 			return true
@@ -167,7 +167,7 @@ func (l *List[T]) Some(handler PredicateHandler[T]) bool {
 }
 
 // None returns true no element in the List satisfy the predicate
-func (l *List[T]) None(handler PredicateHandler[T]) bool {
+func (l *List[T]) None(handler Predicate[T]) bool {
 	for _, v := range l.Elements() {
 		if handler(v) {
 			return false
@@ -177,32 +177,61 @@ func (l *List[T]) None(handler PredicateHandler[T]) bool {
 }
 
 // Pop removes the last element from the List and returns itself
-func (l *List[T]) Pop() Iterable[T] {
+func (l *List[T]) Pop() Collection[T] {
 	*l = l.Elements()[0 : l.Length()-1]
 	return l
 }
 
 // Shift removes the first element from the List and returns itself
-func (l *List[T]) Shift() Iterable[T] {
+func (l *List[T]) Shift() Collection[T] {
 	*l = l.Elements()[1:l.Length()]
 	return l
 }
 
 // Set sets the given element in the given index, and returns itself
 // if the given index is not yet filled, panics
-func (l *List[T]) Set(index int, element T) Iterable[T] {
+func (l *List[T]) Set(index int, element T) Collection[T] {
 	l.ElementAt(index)
 	at := l.At(index)
 	*at = element
 	return l
 }
 
-// Interval returns a new Iterable with all elements between from and to given indexes
-func (l *List[T]) Interval(from, to int) Iterable[T] {
+// Interval returns a new Collection with all elements between from and to given indexes
+func (l *List[T]) Interval(from, to int) Collection[T] {
 	return NewList[T](l.Elements()[from : to+1]...)
 }
 
 // String returns a string representation of the List
 func (l *List[T]) String() string {
 	return fmt.Sprint(l.Elements())
+}
+
+// Sort receive a Sorter function to sort its elements, and returns itself after sorted
+func (l *List[T]) Sort(sorter Sorter[T]) Collection[T] {
+	changed := true
+	for changed {
+		changed = l.sort(sorter)
+	}
+	return l
+}
+
+func (l *List[T]) sort(sorter Sorter[T]) bool {
+	changed := false
+	for i, _ := range l.Elements() {
+		if i == 0 {
+			continue
+		}
+		a, b := l.ElementAt(i-1), l.ElementAt(i)
+		step := sorter(a, b)
+		if step <= 0 {
+			continue
+		}
+		if step > 0 {
+			l.Set(i, a)
+			l.Set(i-1, b)
+			changed = true
+		}
+	}
+	return changed
 }

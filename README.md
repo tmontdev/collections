@@ -1,13 +1,13 @@
-[![Go Documentation](https://godocs.io/github.com/tmontdev/iterable?status.svg)](https://godocs.io/github.com/tmontdev/iterable)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tmontdev/iterable)](https://goreportcard.com/report/github.com/tmontdev/iterable)
+[![Go Documentation](https://godocs.io/github.com/tmontdev/collection?status.svg)](https://godocs.io/github.com/tmontdev/collection)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tmontdev/collection)](https://goreportcard.com/report/github.com/tmontdev/collection)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=tmontdev_iterable&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=tmontdev_iterable)
-[![Sourcegraph](https://sourcegraph.com/github.com/tmontdev/iterable/-/badge.svg)](https://sourcegraph.com/github.com/tmontdev/iterable?badge)
-![visitors](https://visitor-badge.laobi.icu/badge?page_id=tmontdev.iterable)
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tmontdev/iterable/blob/main/LICENSE)
+[![Sourcegraph](https://sourcegraph.com/github.com/tmontdev/collection/-/badge.svg)](https://sourcegraph.com/github.com/tmontdev/collection?badge)
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=tmontdev.collection)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tmontdev/collection/blob/main/LICENSE)
 
 <!-- TOC -->
 
-- [Iterable](#iterable)
+- [Collection](#collection)
   - [Install](#install)
   - [Usage](#usage-)
   - [Release Notes](#release-notes)
@@ -16,23 +16,25 @@
 
 <!-- TOC -->
 
-# Iterable
-**Iterable** package provides a simple interface to handle data collections in golang.
+# Collection
+
+**Collection** package provides a simple interface to handle data collections in golang.
 
 ## Install
+
 ```shell
-go get github.com/tmontdev/iterable
+go get github.com/tmontdev/collection
 ```
 
-## Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/iterable?status.svg)](https://godocs.io/github.com/tmontdev/iterable)
+## Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/collection?status.svg)](https://godocs.io/github.com/tmontdev/collection)
 
-**To get get usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/iterable)**
+**To get get usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/collection)**
 
 ## Release Notes
 
 ### v0.1.0
 
-**Iterable** interface with the primary methods:
+**collection** interface with the primary methods:
 
 - **Length**
 - **IsEmpty**
@@ -62,5 +64,6 @@ go get github.com/tmontdev/iterable
 
 ### v0.2.0
 
-**Iterable** got new methods:
+**collection** got new methods:
+
 - **Interval**

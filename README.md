@@ -69,7 +69,7 @@ go get github.com/tmontdev/collection
 
 - **Interval**
 
-### v0.2.0
+### v0.3.0
 
 **collection** got new methods:
 

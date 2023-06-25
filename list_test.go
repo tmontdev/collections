@@ -1,4 +1,4 @@
-package iterable
+package collection
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 
 type testCase[T comparable] struct {
 	name              string
-	input             Iterable[any]
+	input             Collection[any]
 	parameters        []any
 	expectPanic       bool
 	expected          T
-	runnable          func(*testing.T, Iterable[any], []any) T
+	runnable          func(*testing.T, Collection[any], []any) T
 	nilTypeComparison bool
 }
 
@@ -26,20 +26,29 @@ func caseRunner[T comparable](t *testing.T, c testCase[T]) {
 		if r := recover(); r != nil {
 			if c.expectPanic {
 				panicked = true
-				fmt.Printf("caseRunner: test case %v panics as expected. %v\n", c.name, r)
+				message := fmt.Sprintf("caseRunner: test case %v panics as expected. %v\n", c.name, r)
+				println(message)
+			} else {
+				message := fmt.Sprintf(fmt.Sprintf("caseRunner: test case %v panics were not expected. %v\n", c.name, r))
+				println(message)
+				t.Error(message)
 			}
 			return
 		}
 	}()
 	result := c.runnable(t, c.input, c.parameters)
 	if c.expectPanic != panicked {
-		t.Errorf("caseRunner: %v: Expected panic %v. Got: %v", c.name, c.expectPanic, panicked)
+		message := fmt.Sprintf("caseRunner: %v: Expected panic %v. Got: %v", c.name, c.expectPanic, panicked)
+		println(message)
+		t.Error(message)
 	}
 	if !c.nilTypeComparison && fmt.Sprintf("%v%v", result, c.expected) == "<nil><nil>" {
 		return
 	}
 	if result != c.expected && !c.expectPanic {
-		t.Errorf("caseRunner: %v: Expected %v. Got: %v", c.name, c.expected, result)
+		message := fmt.Sprintf("caseRunner: %v: Expected %v. Got: %v", c.name, c.expected, result)
+		println(message)
+		t.Error(message)
 	}
 	return
 }
@@ -51,7 +60,7 @@ var lengthCases = []testCase[int]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    0,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) int {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) int {
 			return list.Length()
 		},
 	},
@@ -61,7 +70,7 @@ var lengthCases = []testCase[int]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    len(oneTwoThreeList.Elements()),
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) int {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) int {
 			return list.Length()
 		},
 	},
@@ -74,7 +83,7 @@ var emptyCases = []testCase[bool]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.IsEmpty()
 		},
 	},
@@ -84,7 +93,7 @@ var emptyCases = []testCase[bool]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.IsNotEmpty()
 		},
 	},
@@ -94,7 +103,7 @@ var emptyCases = []testCase[bool]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.IsNotEmpty()
 		},
 	},
@@ -104,7 +113,7 @@ var emptyCases = []testCase[bool]{
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.IsEmpty()
 		},
 	},
@@ -118,7 +127,7 @@ var atCases = []testCase[any]{
 		expectPanic:       false,
 		expected:          nil,
 		nilTypeComparison: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) any {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) any {
 			return list.At(0)
 		},
 	},
@@ -129,7 +138,7 @@ var atCases = []testCase[any]{
 		expectPanic:       false,
 		expected:          true,
 		nilTypeComparison: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) any {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) any {
 			n := list.At(0)
 			*n = 4
 			return list.ElementAt(0).(int) == 4
@@ -142,7 +151,7 @@ var atCases = []testCase[any]{
 		expectPanic:       true,
 		expected:          false,
 		nilTypeComparison: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) any {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) any {
 			return list.ElementAt(0).(int) == 1
 		},
 	},
@@ -153,7 +162,7 @@ var atCases = []testCase[any]{
 		expectPanic:       false,
 		expected:          true,
 		nilTypeComparison: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) any {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) any {
 			n := list.ElementAt(0)
 			if n != 1 {
 				t.Error("List.ElementAt is different from expected")
@@ -174,16 +183,16 @@ var indexCases = []testCase[bool]{
 		input:       emptyList.Clone(),
 		expected:    false,
 		expectPanic: true,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.FirstElement() == 1
 		},
 	},
 	{
 		name:        "List.First.Empty",
 		input:       emptyList.Clone(),
-		expected:    false,
+		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.First() == nil
 		},
 	},
@@ -192,16 +201,16 @@ var indexCases = []testCase[bool]{
 		input:       emptyList.Clone(),
 		expected:    false,
 		expectPanic: true,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.LastElement() == 1
 		},
 	},
 	{
 		name:        "List.Last.Empty",
 		input:       emptyList.Clone(),
-		expected:    false,
+		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Last() == nil
 		},
 	},
@@ -210,7 +219,7 @@ var indexCases = []testCase[bool]{
 		input:       emptyList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.FirstIndexWhere(func(a any) bool {
 				return true
 			}) == -1
@@ -221,7 +230,7 @@ var indexCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.FirstIndexWhere(func(a any) bool {
 				return a.(int)%2 == 0
 			}) == 1
@@ -232,7 +241,7 @@ var indexCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.FirstIndexWhere(func(a any) bool {
 				return a.(int)%2 == 1
 			}) == 0
@@ -243,7 +252,7 @@ var indexCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.LastIndexWhere(func(a any) bool {
 				return a.(int)%2 == 1
 			}) == 2
@@ -254,7 +263,7 @@ var indexCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			odds := list.IndexWhere(func(a any) bool {
 				return a.(int)%2 == 1
 			})
@@ -268,7 +277,7 @@ var whereCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			odds := list.Where(func(candidate any) bool {
 				return candidate.(int)%2 == 1
 			})
@@ -280,7 +289,7 @@ var whereCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			odds := list.Where(func(candidate any) bool {
 				return candidate.(int)%2 == 0
 			})
@@ -294,7 +303,7 @@ var mapCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			strs := list.Map(func(candidate any) any {
 				return fmt.Sprint(candidate)
 			})
@@ -309,7 +318,7 @@ var reduceCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Reduce(func(acc any, candidate any, idx int) any {
 				return acc.(int) + candidate.(int)
 			}, 0) == 6
@@ -320,7 +329,7 @@ var reduceCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			strs := list.Reduce(func(acc any, candidate any, idx int) any {
 				return acc.(*List[string]).Push(fmt.Sprint(candidate))
 			}, NewList[string]()).(*List[string])
@@ -335,7 +344,7 @@ var everyCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Every(func(candidate any) bool {
 				return candidate.(int) < 4
 			})
@@ -346,7 +355,7 @@ var everyCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Every(func(candidate any) bool {
 				return candidate.(int) > 0
 			})
@@ -357,7 +366,7 @@ var everyCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    false,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Every(func(candidate any) bool {
 				return candidate.(int) > 1
 			})
@@ -371,7 +380,7 @@ var someCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Some(func(candidate any) bool {
 				return candidate.(int) < 4
 			})
@@ -382,7 +391,7 @@ var someCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Some(func(candidate any) bool {
 				return candidate.(int) > 0
 			})
@@ -393,7 +402,7 @@ var someCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Some(func(candidate any) bool {
 				return candidate.(int) == 1
 			})
@@ -405,7 +414,7 @@ var someCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    false,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.Some(func(candidate any) bool {
 				return candidate.(int) == 10
 			})
@@ -419,7 +428,7 @@ var noneCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    false,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.None(func(candidate any) bool {
 				return candidate.(int) < 4
 			})
@@ -430,7 +439,7 @@ var noneCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    false,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.None(func(candidate any) bool {
 				return candidate.(int) > 0
 			})
@@ -441,7 +450,7 @@ var noneCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    false,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.None(func(candidate any) bool {
 				return candidate.(int) == 1
 			})
@@ -453,7 +462,7 @@ var noneCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			return list.None(func(candidate any) bool {
 				return candidate.(int) == 10
 			})
@@ -467,7 +476,7 @@ var popCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			popped := list.Pop()
 			return popped.ElementAt(0) == 1 && popped.ElementAt(1) == 2 && popped.Length() == 2
 
@@ -478,7 +487,7 @@ var popCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			popped := list.Pop().Pop()
 			return popped.ElementAt(0) == 1 && popped.Length() == 1
 
@@ -492,7 +501,7 @@ var shiftCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			popped := list.Shift()
 			return popped.ElementAt(0) == 2 && popped.ElementAt(1) == 3 && popped.Length() == 2
 
@@ -503,7 +512,7 @@ var shiftCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			popped := list.Shift().Shift()
 			return popped.ElementAt(0) == 3 && popped.Length() == 1
 
@@ -517,7 +526,7 @@ var setCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			set := list.Set(1, 4)
 			return set.Length() == list.Length() && set.ElementAt(0) == list.ElementAt(0) && set.ElementAt(1) == 4 && set.ElementAt(2) == list.ElementAt(2)
 
@@ -531,7 +540,7 @@ var stringCases = []testCase[string]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    fmt.Sprint(oneTwoThreeList.Elements()),
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) string {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) string {
 			return list.String()
 		},
 	},
@@ -543,9 +552,36 @@ var intervalCases = []testCase[bool]{
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
 		expectPanic: false,
-		runnable: func(t *testing.T, list Iterable[any], parameters []any) bool {
+		runnable: func(t *testing.T, list Collection[any], parameters []any) bool {
 			interval := list.Interval(0, 1)
 			return interval.ElementAt(0).(int) == 1 && interval.ElementAt(1).(int) == 2
+		},
+	},
+}
+
+var sortCases = []testCase[string]{
+	{
+		name:        "List.Sort.Int.Esc",
+		input:       NewList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
+		expected:    fmt.Sprint([]any{1, 3, 5, 15, 23, 24, 67, 89, 142, 439, 1203, 1981}),
+		expectPanic: false,
+		runnable: func(t *testing.T, list Collection[any], parameters []any) string {
+			list.Sort(func(a, b any) int {
+				return a.(int) - b.(int)
+			})
+			return list.String()
+		},
+	},
+	{
+		name:        "List.Sort.Int.Desc",
+		input:       NewList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
+		expected:    fmt.Sprint([]any{1981, 1203, 439, 142, 89, 67, 24, 23, 15, 5, 3, 1}),
+		expectPanic: false,
+		runnable: func(t *testing.T, list Collection[any], parameters []any) string {
+			list.Sort(func(a, b any) int {
+				return b.(int) - a.(int)
+			})
+			return list.String()
 		},
 	},
 }
@@ -637,5 +673,11 @@ func TestSet(t *testing.T) {
 func TestInterval(t *testing.T) {
 	for _, v := range intervalCases {
 		caseRunner[bool](t, v)
+	}
+}
+
+func TestSort(t *testing.T) {
+	for _, v := range sortCases {
+		caseRunner[string](t, v)
 	}
 }

@@ -1,7 +1,9 @@
-package iterable
+package collection
 
-type PredicateHandler[T any] func(T) bool
+type Predicate[T any] func(T) bool
 
-type MapHandler[T any] func(T) any
+type Mapper[T any] func(T) any
 
 type Reducer[T any] func(any, T, int) any
+
+type Sorter[T any] func(T, T) int

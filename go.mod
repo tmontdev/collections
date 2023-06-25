@@ -1,3 +1,3 @@
-module github.com/tmontdev/iterable
+module github.com/tmontdev/collection
 
 go 1.20

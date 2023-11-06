@@ -1,5 +1,6 @@
 package collection
 
+// Map
 type Map[K comparable, V any] map[K]V
 
 func (m Map[K, V]) IsEmpty() bool {

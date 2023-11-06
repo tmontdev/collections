@@ -1,5 +1,7 @@
 package collection
 
+// Dictionary is a collection of key/value pairs, from which you retrieve a value using its associated key (like map).
+// It provides helper methods to easily handle data. The default implementation is Map
 type Dictionary[K comparable, V any] interface {
 	// Length method return how many elements are stored in Dictionary
 	Length() int

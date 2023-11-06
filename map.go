@@ -87,3 +87,19 @@ func (m Map[K, V]) Clone() Dictionary[K, V] {
 	}
 	return cloned
 }
+
+func (m Map[K, V]) Keys() Iterable[K] {
+	list := &List[K]{}
+	for k, _ := range m {
+		list.Push(k)
+	}
+	return list
+}
+
+func (m Map[K, V]) Values() Iterable[V] {
+	list := &List[V]{}
+	for _, v := range m {
+		list.Push(v)
+	}
+	return list
+}

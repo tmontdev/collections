@@ -40,5 +40,9 @@ type Dictionary[K comparable, V any] interface {
 	// Has returns true if the given key is filled.
 	Has(key K) bool
 
-	// Keys returns a List with all
+	// Keys returns a List with all keys
+	Keys() Iterable[K]
+
+	// Values returns a List with all values
+	Values() Iterable[V]
 }

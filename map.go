@@ -1,4 +1,4 @@
-package collection
+package collections
 
 // Map
 type Map[K comparable, V any] map[K]V
@@ -15,7 +15,7 @@ func (m Map[K, V]) Length() int {
 	return len(m)
 }
 
-func (m Map[K, V]) Where(predicate KeyPredicate[K, V]) Dictionary[K, V] {
+func (m Map[K, V]) Where(predicate KeyValuePredicate[K, V]) Dictionary[K, V] {
 	filtered := Map[K, V]{}
 	if m.IsEmpty() {
 		return filtered
@@ -28,7 +28,7 @@ func (m Map[K, V]) Where(predicate KeyPredicate[K, V]) Dictionary[K, V] {
 	return filtered
 }
 
-func (m Map[K, V]) RemoveWhere(predicate KeyPredicate[K, V]) Dictionary[K, V] {
+func (m Map[K, V]) RemoveWhere(predicate KeyValuePredicate[K, V]) Dictionary[K, V] {
 	if m.IsEmpty() {
 		return m
 	}
@@ -40,7 +40,7 @@ func (m Map[K, V]) RemoveWhere(predicate KeyPredicate[K, V]) Dictionary[K, V] {
 	return m
 }
 
-func (m Map[K, V]) Some(predicate KeyPredicate[K, V]) bool {
+func (m Map[K, V]) Some(predicate KeyValuePredicate[K, V]) bool {
 	for k, v := range m {
 		if predicate(k, v) {
 			return true
@@ -49,11 +49,11 @@ func (m Map[K, V]) Some(predicate KeyPredicate[K, V]) bool {
 	return false
 }
 
-func (m Map[K, V]) None(predicate KeyPredicate[K, V]) bool {
+func (m Map[K, V]) None(predicate KeyValuePredicate[K, V]) bool {
 	return !m.Some(predicate)
 }
 
-func (m Map[K, V]) Every(predicate KeyPredicate[K, V]) bool {
+func (m Map[K, V]) Every(predicate KeyValuePredicate[K, V]) bool {
 	for k, v := range m {
 		if !predicate(k, v) {
 			return false
@@ -103,4 +103,13 @@ func (m Map[K, V]) Values() Iterable[V] {
 		list.Push(v)
 	}
 	return list
+}
+
+func (m Map[K, V]) Merge(from Map[K, V], replace bool) Map[K, V] {
+	for k, v := range from {
+		if !m.Has(k) || replace {
+			m.Set(k, v)
+		}
+	}
+	return m
 }

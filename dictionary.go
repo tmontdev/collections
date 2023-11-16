@@ -1,6 +1,6 @@
-package collection
+package collections
 
-// Dictionary is a collection of key/value pairs, from which you retrieve a value using its associated key (like map).
+// Dictionary is a collections of key/value pairs, from which you retrieve a value using its associated key (like map).
 // It provides helper methods to easily handle data. The default implementation is Map
 type Dictionary[K comparable, V any] interface {
 	// Length method return how many elements are stored in Dictionary
@@ -13,19 +13,19 @@ type Dictionary[K comparable, V any] interface {
 	IsNotEmpty() bool
 
 	// Where returns a new Dictionary containing only the elements witch satisfies de Predicate
-	Where(predicate KeyPredicate[K, V]) Dictionary[K, V]
+	Where(predicate KeyValuePredicate[K, V]) Dictionary[K, V]
 
 	// RemoveWhere deletes all elements witch satisfies the Predicate, and returns itself
-	RemoveWhere(predicate KeyPredicate[K, V]) Dictionary[K, V]
+	RemoveWhere(predicate KeyValuePredicate[K, V]) Dictionary[K, V]
 
 	// Some returns true if one or more elements satisfies de Predicate
-	Some(predicate KeyPredicate[K, V]) bool
+	Some(predicate KeyValuePredicate[K, V]) bool
 
 	// None returns true when no element satisfies the Predicate
-	None(predicate KeyPredicate[K, V]) bool
+	None(predicate KeyValuePredicate[K, V]) bool
 
 	// Every returns true when all the elements satisfies the Predicate
-	Every(predicate KeyPredicate[K, V]) bool
+	Every(predicate KeyValuePredicate[K, V]) bool
 
 	// Set sets the given value in the given key, and returns itself
 	Set(key K, value V) Dictionary[K, V]

@@ -1,6 +1,6 @@
-package collection
+package collections
 
-// Iterable is a collection interface for int keyed values (like arrays and slices).
+// Iterable is a collections interface for int keyed values (like arrays and slices).
 // It provides helper methods to easily handle data. The default implementation is *List
 type Iterable[T any] interface {
 	// Length method returns how many element are in the Iterable

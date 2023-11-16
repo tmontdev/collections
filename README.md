@@ -10,10 +10,6 @@
 - [Collection](#collection)
   - [Install](#install)
   - [Usage](#usage-)
-  - [Release Notes](#release-notes)
-    - [v0.1.0](#v010)
-    - [v0.2.0](#v020)
-    - [v0.3.0](#v030)
 
 # Collection empower your slices and maps
 **Collection** package provides a simple interface to handle data collections in golang.

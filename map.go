@@ -1,6 +1,5 @@
 package collections
 
-// Map
 type Map[K comparable, V any] map[K]V
 
 func (m Map[K, V]) IsEmpty() bool {
@@ -90,7 +89,7 @@ func (m Map[K, V]) Clone() Dictionary[K, V] {
 }
 
 func (m Map[K, V]) Keys() List[K] {
-	list := &DynamicList[K]{}
+	list := &SimpleList[K]{}
 	for k, _ := range m {
 		list.Push(k)
 	}
@@ -98,7 +97,7 @@ func (m Map[K, V]) Keys() List[K] {
 }
 
 func (m Map[K, V]) Values() List[V] {
-	list := &DynamicList[V]{}
+	list := &SimpleList[V]{}
 	for _, v := range m {
 		list.Push(v)
 	}

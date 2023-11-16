@@ -226,6 +226,72 @@ var indexCases = []testCase[bool]{
 		},
 	},
 	{
+		name:        "DynamicList.FirstWhere.NotSatisfied",
+		input:       emptyList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.FirstWhere(func(a any) bool {
+				return true
+			}) == nil
+		},
+	},
+	{
+		name:        "DynamicList.FirstWhere.Satisfied",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.FirstWhere(func(a any) bool {
+				return true
+			}) == list.First()
+		},
+	},
+	{
+		name:        "DynamicList.FirstElementWhere.NotSatisfied",
+		input:       emptyList.Clone(),
+		expected:    true,
+		expectPanic: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.FirstElementWhere(func(a any) bool {
+				return true
+			}) == nil
+		},
+	},
+	{
+		name:        "DynamicList.FirstElementWhere.Satisfied",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.FirstElementWhere(func(a any) bool {
+				return true
+			}) == 1
+		},
+	},
+	{
+		name:        "DynamicList.LastWhere.NotSatisfied",
+		input:       emptyList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.LastWhere(func(a any) bool {
+				return true
+			}) == nil
+		},
+	},
+	{
+		name:        "DynamicList.LastWhere.Satisfied",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.LastWhere(func(a any) bool {
+				return true
+			}) == list.Last()
+		},
+	},
+	{
 		name:        "DynamicList.FirstIndexWhere.Even",
 		input:       oneTwoThreeList.Clone(),
 		expected:    true,
@@ -256,6 +322,29 @@ var indexCases = []testCase[bool]{
 			return list.LastIndexWhere(func(a any) bool {
 				return a.(int)%2 == 1
 			}) == 2
+		},
+	},
+
+	{
+		name:        "DynamicList.LastElementWhere.NotSatisfied",
+		input:       emptyList.Clone(),
+		expected:    true,
+		expectPanic: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.LastElementWhere(func(a any) bool {
+				return true
+			}) == nil
+		},
+	},
+	{
+		name:        "DynamicList.LastElementWhere.Satisfied",
+		input:       oneTwoThreeList.Clone(),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.LastElementWhere(func(a any) bool {
+				return true
+			}) == 3
 		},
 	},
 	{

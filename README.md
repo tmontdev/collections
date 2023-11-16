@@ -27,11 +27,6 @@ go get github.com/tmontdev/collection
 ## Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/collection?status.svg)](https://godocs.io/github.com/tmontdev/collection)
 **To get more api usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/collection)**
 
-### Replace your maps
-
-///
-
-
 ## Release Notes
 
 ### v0.1.0

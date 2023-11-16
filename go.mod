@@ -1,3 +1,3 @@
-module github.com/tmontdev/collection
+module github.com/tmontdev/collections
 
 go 1.20

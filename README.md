@@ -15,10 +15,7 @@
     - [v0.2.0](#v020)
     - [v0.3.0](#v030)
 
-<!-- TOC -->
-
-# Collection
-
+# Collection empower your slices and maps
 **Collection** package provides a simple interface to handle data collections in golang.
 
 ## Install
@@ -28,8 +25,12 @@ go get github.com/tmontdev/collection
 ```
 
 ## Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/collection?status.svg)](https://godocs.io/github.com/tmontdev/collection)
+**To get more api usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/collection)**
 
-**To get get usage instructions, see our [godoc](https://godocs.io/github.com/tmontdev/collection)**
+### Replace your maps
+
+///
+
 
 ## Release Notes
 

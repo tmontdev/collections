@@ -23,7 +23,6 @@ type SimpleList[T any] []T
 
 // Length returns how many elements are in the SimpleList.
 func (l *SimpleList[T]) Length() int {
-
 	return len(l.Elements())
 }
 

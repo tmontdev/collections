@@ -1,7 +1,11 @@
 package collections
 
-import "sync"
+import (
+	"encoding/json"
+	"sync"
+)
 
+// SafeList is a dynamically-sized and thread-safe implementation of List.
 type SafeList[T any] struct {
 	l *SimpleList[T]
 	sync.Mutex
@@ -275,4 +279,18 @@ func (s *SafeList[T]) IsDynamicallySized() bool {
 // IsThreadSafe returns true, as SafeList is a thread-safe implementation of List
 func (s *SafeList[T]) IsThreadSafe() bool {
 	return true
+}
+
+func (s *SafeList[T]) UnmarshalJSON(data []byte) error {
+	return protect[error, T](s, func() error {
+		return json.Unmarshal(data, s.l)
+	})
+}
+
+func (s *SafeList[T]) MarshalJSON() (data []byte, err error) {
+	protect[any, T](s, func() any {
+		data, err = json.Marshal(s.l)
+		return err
+	})
+	return
 }

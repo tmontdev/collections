@@ -18,7 +18,7 @@ func NewListFrom[T any](elements []T) *SimpleList[T] {
 	return l
 }
 
-// SimpleList is a typed slice implementation of List. A
+// SimpleList is a dynamically-sized and thread-unsafe implementation of List.
 type SimpleList[T any] []T
 
 // Length returns how many elements are in the SimpleList.

@@ -12,10 +12,10 @@ type Dictionary[K comparable, V any] interface {
 	// IsNotEmpty method return true if there are one or more values stored in the Dictionary
 	IsNotEmpty() bool
 
-	// Where returns a new Dictionary containing only the elements witch satisfies de Predicate
+	// Where returns a new Dictionary containing only the elements which satisfies de Predicate
 	Where(predicate KeyValuePredicate[K, V]) Dictionary[K, V]
 
-	// RemoveWhere deletes all elements witch satisfies the Predicate, and returns itself
+	// RemoveWhere deletes all elements which satisfies the Predicate, and returns itself
 	RemoveWhere(predicate KeyValuePredicate[K, V]) Dictionary[K, V]
 
 	// Some returns true if one or more elements satisfies de Predicate
@@ -42,9 +42,9 @@ type Dictionary[K comparable, V any] interface {
 	// Has returns true if the given key is filled.
 	Has(key K) bool
 
-	// Keys returns a List with all keys
-	Keys() Iterable[K]
+	// Keys returns a DynamicList with all keys
+	Keys() List[K]
 
-	// Values returns a List with all values
-	Values() Iterable[V]
+	// Values returns a DynamicList with all values
+	Values() List[V]
 }

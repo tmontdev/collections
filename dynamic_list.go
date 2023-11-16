@@ -11,19 +11,19 @@ func NewDynamicList[T any](elements ...T) *DynamicList[T] {
 	return l
 }
 
-// NewDynamicListFrom returns a new DynamicList with the given elements
+// NewDynamicListFrom returns a new DynamicList with the given slice
 func NewDynamicListFrom[T any](elements []T) *DynamicList[T] {
 	l := &DynamicList[T]{}
 	l.Push(elements...)
 	return l
 }
 
-// DynamicList is a simple slice implementation of List[T].
-// As a slice, it is dynamically-sized and not thread-safe.
+// DynamicList is a typed slice implementation of List. A
 type DynamicList[T any] []T
 
 // Length returns how many elements are in the DynamicList.
 func (l *DynamicList[T]) Length() int {
+
 	return len(l.Elements())
 }
 
@@ -70,7 +70,7 @@ func (l *DynamicList[T]) Clone() List[T] {
 }
 
 // FirstElement returns the first element in the DynamicList.
-// If List is empty (see IsEmpty), panics
+// If DynamicList is empty (see IsEmpty), panics
 func (l *DynamicList[T]) FirstElement() T {
 	return l.ElementAt(0)
 }
@@ -81,8 +81,8 @@ func (l *DynamicList[T]) First() *T {
 	return l.At(0)
 }
 
-// LastElement returns the last element in the List.
-// If List is empty (see IsEmpty), panics.
+// LastElement returns the last element in the DynamicList.
+// If DynamicList is empty (see IsEmpty), panics.
 func (l *DynamicList[T]) LastElement() T {
 	return l.ElementAt(l.Length() - 1)
 }
@@ -167,8 +167,8 @@ func (l *DynamicList[T]) LastElementWhere(handler Predicate[T]) T {
 	return e
 }
 
-// IndexWhere returns a List[int] for all element index which satisfies the predicate.
-// If no element satisfies the predicate, an empty List will be returned.
+// IndexWhere returns a DynamicList[int] for all element index which satisfies the predicate.
+// If no element satisfies the predicate, an empty DynamicList will be returned.
 func (l *DynamicList[T]) IndexWhere(handler Predicate[T]) List[int] {
 	list := NewDynamicList[int]()
 	for i, v := range l.Elements() {
@@ -179,8 +179,8 @@ func (l *DynamicList[T]) IndexWhere(handler Predicate[T]) List[int] {
 	return list
 }
 
-// Where returns a List with all the elements which satisfies the predicate.
-// If no element satisfies the predicate, an empty List will be returned.
+// Where returns a DynamicList with all the elements which satisfies the predicate.
+// If no element satisfies the predicate, an empty DynamicList will be returned.
 func (l *DynamicList[T]) Where(handler Predicate[T]) List[T] {
 	selected := NewDynamicList[T]()
 	for _, v := range l.Elements() {
@@ -191,7 +191,7 @@ func (l *DynamicList[T]) Where(handler Predicate[T]) List[T] {
 	return selected
 }
 
-// Map iterates over the element of the List calling Mapper, and return a new List with the results.
+// Map iterates over the element of the DynamicList calling Mapper, and return a new DynamicList with the results.
 func (l *DynamicList[T]) Map(handler Mapper[T]) List[any] {
 	mapped := NewDynamicList[any]()
 	for _, v := range l.Elements() {
@@ -259,12 +259,12 @@ func (l *DynamicList[T]) Set(index int, element T) List[T] {
 	return l
 }
 
-// Interval returns a new List with all elements between the *from* and *to* indexes.
+// Interval returns a new DynamicList with all elements between the *from* and *to* indexes.
 func (l *DynamicList[T]) Interval(from, to int) List[T] {
 	return NewDynamicList[T](l.Elements()[from : to+1]...)
 }
 
-// String returns a string representation of the List.
+// String returns a string representation of the DynamicList.
 func (l *DynamicList[T]) String() string {
 	return fmt.Sprint(l.Elements())
 }
@@ -278,10 +278,20 @@ func (l *DynamicList[T]) Sort(sorter Sorter[T]) List[T] {
 	return l
 }
 
-// Clear removes all elements from the List, making it empty, and then returns itself.
+// Clear removes all elements from the DynamicList, making it empty, and then returns itself.
 func (l *DynamicList[T]) Clear() List[T] {
 	*l = []T{}
 	return l
+}
+
+// IsDynamicallySized returns true, as SafeListDynamicList is a dynamically-sized implementation of List
+func (l *DynamicList[T]) IsDynamicallySized() bool {
+	return true
+}
+
+// IsThreadSafe returns false, as DynamicList is not a thread-safe implementation of List
+func (l *DynamicList[T]) IsThreadSafe() bool {
+	return false
 }
 
 func (l *DynamicList[T]) sort(sorter Sorter[T]) bool {

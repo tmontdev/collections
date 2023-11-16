@@ -113,4 +113,10 @@ type List[T any] interface {
 
 	// Clear removes all elements from the List, making it empty, and then returns itself.
 	Clear() List[T]
+
+	//IsDynamicallySized returns true if the List implementation is dynamically-sized
+	IsDynamicallySized() bool
+
+	//IsThreadSafe returns true if the List implementation is dynamically-sized
+	IsThreadSafe() bool
 }

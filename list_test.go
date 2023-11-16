@@ -2,10 +2,12 @@ package collections
 
 import (
 	"fmt"
+	"strings"
+	"sync"
 	"testing"
 )
 
-type testCase[T comparable] struct {
+type listTestCase[T comparable] struct {
 	name              string
 	input             List[any]
 	parameters        []any
@@ -15,11 +17,12 @@ type testCase[T comparable] struct {
 	nilTypeComparison bool
 }
 
-var emptyList = NewDynamicList[any]()
+var empty = []any{}
+var oneTwoThree = []any{1, 2, 3}
 
 var oneTwoThreeList = NewDynamicList[any](1, 2, 3)
 
-func caseRunner[T comparable](t *testing.T, c testCase[T]) {
+func caseRunner[T comparable](t *testing.T, c listTestCase[T]) {
 	println("caseRunner: Running test case: ", c.name, "...")
 	panicked := false
 	defer func() {
@@ -53,10 +56,10 @@ func caseRunner[T comparable](t *testing.T, c testCase[T]) {
 	return
 }
 
-var lengthCases = []testCase[int]{
+var lengthCases = []listTestCase[int]{
 	{
 		name:        "DynamicList.Length.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    0,
@@ -65,8 +68,18 @@ var lengthCases = []testCase[int]{
 		},
 	},
 	{
+		name:        "DynamicList.Clone.Length.Empty",
+		input:       NewDynamicList[any](empty...),
+		parameters:  nil,
+		expectPanic: false,
+		expected:    0,
+		runnable: func(t *testing.T, list List[any], parameters []any) int {
+			return list.Clone().Length()
+		},
+	},
+	{
 		name:        "DynamicList.Length.Value",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    len(oneTwoThreeList.Elements()),
@@ -74,12 +87,22 @@ var lengthCases = []testCase[int]{
 			return list.Length()
 		},
 	},
+	{
+		name:        "DynamicList.Clone.Length.Value",
+		input:       NewDynamicListFrom[any](oneTwoThree),
+		parameters:  nil,
+		expectPanic: false,
+		expected:    len(oneTwoThreeList.Elements()),
+		runnable: func(t *testing.T, list List[any], parameters []any) int {
+			return list.Clone().Length()
+		},
+	},
 }
 
-var emptyCases = []testCase[bool]{
+var emptyCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.IsEmpty.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
@@ -89,7 +112,7 @@ var emptyCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.IsNotEmpty.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
@@ -99,7 +122,7 @@ var emptyCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.IsNotEmpty.Filled",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
@@ -109,7 +132,7 @@ var emptyCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.IsEmpty.Filled",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
@@ -119,10 +142,10 @@ var emptyCases = []testCase[bool]{
 	},
 }
 
-var atCases = []testCase[any]{
+var atCases = []listTestCase[any]{
 	{
 		name:              "DynamicList.At.Empty",
-		input:             emptyList.Clone(),
+		input:             NewDynamicList[any](empty...),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          nil,
@@ -133,7 +156,7 @@ var atCases = []testCase[any]{
 	},
 	{
 		name:              "DynamicList.At.MutableValue",
-		input:             oneTwoThreeList.Clone(),
+		input:             NewDynamicListFrom[any](oneTwoThree),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          true,
@@ -146,7 +169,7 @@ var atCases = []testCase[any]{
 	},
 	{
 		name:              "DynamicList.ElementAt.Empty",
-		input:             emptyList.Clone(),
+		input:             NewDynamicList[any](empty...),
 		parameters:        nil,
 		expectPanic:       true,
 		expected:          false,
@@ -157,7 +180,7 @@ var atCases = []testCase[any]{
 	},
 	{
 		name:              "DynamicList.ElementAt.NonMutableValue",
-		input:             oneTwoThreeList.Clone(),
+		input:             NewDynamicListFrom[any](oneTwoThree),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          true,
@@ -177,10 +200,10 @@ var atCases = []testCase[any]{
 	},
 }
 
-var indexCases = []testCase[bool]{
+var indexCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.FirstElement.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    false,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -189,7 +212,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.First.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -198,7 +221,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.LastElement.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    false,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -207,7 +230,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Last.Empty",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -216,7 +239,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstIndexWhere.NotSatisfied",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -227,7 +250,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstWhere.NotSatisfied",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -238,7 +261,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstWhere.Satisfied",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -249,7 +272,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstElementWhere.NotSatisfied",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -260,7 +283,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstElementWhere.Satisfied",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -271,7 +294,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.LastWhere.NotSatisfied",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -282,7 +305,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.LastWhere.Satisfied",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -293,7 +316,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstIndexWhere.Even",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -304,7 +327,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.FirstIndexWhere.Odd",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -315,7 +338,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.LastIndexWhere.Odd",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -327,7 +350,7 @@ var indexCases = []testCase[bool]{
 
 	{
 		name:        "DynamicList.LastElementWhere.NotSatisfied",
-		input:       emptyList.Clone(),
+		input:       NewDynamicList[any](empty...),
 		expected:    true,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -338,7 +361,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.LastElementWhere.Satisfied",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -349,7 +372,7 @@ var indexCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.IndexWhere.Odd",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -360,10 +383,10 @@ var indexCases = []testCase[bool]{
 		},
 	},
 }
-var whereCases = []testCase[bool]{
+var whereCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Where.Odd",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -375,7 +398,7 @@ var whereCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Where.Even",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -386,10 +409,10 @@ var whereCases = []testCase[bool]{
 		},
 	},
 }
-var mapCases = []testCase[bool]{
+var mapCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Map.String",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -401,10 +424,10 @@ var mapCases = []testCase[bool]{
 	},
 }
 
-var reduceCases = []testCase[bool]{
+var reduceCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Reduce.Sum",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -415,22 +438,22 @@ var reduceCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Reduce.Map",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			strs := list.Reduce(func(acc any, candidate any, idx int) any {
-				return acc.(*DynamicList[string]).Push(fmt.Sprint(candidate))
-			}, NewDynamicList[string]()).(*DynamicList[string])
+				return acc.(List[string]).Push(fmt.Sprint(candidate))
+			}, NewDynamicList[string]()).(List[string])
 			return strs.ElementAt(0) == "1" && strs.ElementAt(1) == "2" && strs.ElementAt(2) == "3" && strs.Length() == 3
 		},
 	},
 }
 
-var everyCases = []testCase[bool]{
+var everyCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Every.lt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -441,7 +464,7 @@ var everyCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Every.gt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -452,7 +475,7 @@ var everyCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Every.gt.false",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -463,10 +486,10 @@ var everyCases = []testCase[bool]{
 	},
 }
 
-var someCases = []testCase[bool]{
+var someCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Some.lt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -477,7 +500,7 @@ var someCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Some.gt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -488,7 +511,7 @@ var someCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Every.eq",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -500,7 +523,7 @@ var someCases = []testCase[bool]{
 
 	{
 		name:        "DynamicList.Every.eq.false",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -511,10 +534,10 @@ var someCases = []testCase[bool]{
 	},
 }
 
-var noneCases = []testCase[bool]{
+var noneCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.None.lt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -525,7 +548,7 @@ var noneCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.None.gt",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -536,7 +559,7 @@ var noneCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.None.eq",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -548,7 +571,7 @@ var noneCases = []testCase[bool]{
 
 	{
 		name:        "DynamicList.None.eq.false",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -559,10 +582,10 @@ var noneCases = []testCase[bool]{
 	},
 }
 
-var popCases = []testCase[bool]{
+var popCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Pop",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -572,22 +595,31 @@ var popCases = []testCase[bool]{
 		},
 	},
 	{
+		name:        "DynamicList.Push",
+		input:       NewDynamicListFrom[any](oneTwoThree),
+		expected:    true,
+		expectPanic: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			popped := list.Push(4, 5)
+			return popped.ElementAt(0) == 1 && popped.ElementAt(1) == 2 && popped.ElementAt(2) == 3 && popped.ElementAt(3) == 4 && popped.ElementAt(4) == 5 && popped.Length() == 5
+		},
+	},
+	{
 		name:        "DynamicList.Pop.Double",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			popped := list.Pop().Pop()
 			return popped.ElementAt(0) == 1 && popped.Length() == 1
-
 		},
 	},
 }
 
-var shiftCases = []testCase[bool]{
+var shiftCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Shift",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -598,7 +630,7 @@ var shiftCases = []testCase[bool]{
 	},
 	{
 		name:        "DynamicList.Shift.Double",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -609,10 +641,10 @@ var shiftCases = []testCase[bool]{
 	},
 }
 
-var setCases = []testCase[bool]{
+var setCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Set",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -623,10 +655,10 @@ var setCases = []testCase[bool]{
 	},
 }
 
-var stringCases = []testCase[string]{
+var stringCases = []listTestCase[string]{
 	{
 		name:        "DynamicList.String",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    fmt.Sprint(oneTwoThreeList.Elements()),
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) string {
@@ -635,10 +667,10 @@ var stringCases = []testCase[string]{
 	},
 }
 
-var intervalCases = []testCase[bool]{
+var intervalCases = []listTestCase[bool]{
 	{
 		name:        "DynamicList.Interval",
-		input:       oneTwoThreeList.Clone(),
+		input:       NewDynamicListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -648,7 +680,7 @@ var intervalCases = []testCase[bool]{
 	},
 }
 
-var sortCases = []testCase[string]{
+var sortCases = []listTestCase[string]{
 	{
 		name:        "DynamicList.Sort.Int.Esc",
 		input:       NewDynamicList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
@@ -675,10 +707,10 @@ var sortCases = []testCase[string]{
 	},
 }
 
-var clearCases = []testCase[bool]{
+var clearCases = []listTestCase[bool]{
 	{
 		name:     "DynamicList.Clear.IsEmpty",
-		input:    oneTwoThreeList.Clone(),
+		input:    NewDynamicListFrom[any](oneTwoThree),
 		expected: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			return list.Clear().IsEmpty()
@@ -686,104 +718,227 @@ var clearCases = []testCase[bool]{
 	},
 }
 
+var specificCases = []listTestCase[bool]{
+	{
+		name:     "DynamicList.ThreadSafety",
+		input:    NewDynamicListFrom[any](oneTwoThree).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...),
+		expected: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			var wg sync.WaitGroup
+			dest := list.Clone().Clear()
+			for _, element := range list.Elements() {
+				wg.Add(1)
+				go func(el any) {
+					dest.Push(el)
+					wg.Done()
+				}(element)
+			}
+			wg.Wait()
+			return list.Length() == dest.Length()
+		},
+	},
+	{
+		name:     "DynamicList.IsThreadSafe",
+		input:    NewDynamicListFrom[any](oneTwoThree),
+		expected: false,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.IsThreadSafe()
+		},
+	},
+	{
+		name:     "DynamicList.IsDynamicallySized",
+		input:    NewDynamicListFrom[any](oneTwoThree),
+		expected: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.IsDynamicallySized()
+		},
+	},
+	{
+		name:     "SafeList.ThreadSafety",
+		input:    NewSafeListFrom[any](oneTwoThree).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...),
+		expected: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			var wg sync.WaitGroup
+			dest := list.Clone().Clear()
+			for _, element := range list.Elements() {
+				wg.Add(1)
+				go func(el any) {
+					dest.Push(el)
+					wg.Done()
+				}(element)
+			}
+			wg.Wait()
+			return list.Length() == dest.Length()
+		},
+	},
+	{
+		name:     "SafeList.IsThreadSafe",
+		input:    NewSafeListFrom[any](oneTwoThree),
+		expected: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.IsThreadSafe()
+		},
+	},
+	{
+		name:     "SafeList.IsDynamicallySized",
+		input:    NewSafeListFrom[any](oneTwoThree),
+		expected: true,
+		runnable: func(t *testing.T, list List[any], parameters []any) bool {
+			return list.IsDynamicallySized()
+		},
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
+		safe := cloneSafe(v)
 		caseRunner[int](t, v)
+		caseRunner[int](t, safe)
 	}
 }
 
 func TestEmpty(t *testing.T) {
 	for _, v := range emptyCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestAt(t *testing.T) {
 	for _, v := range atCases {
+		safe := cloneSafe(v)
 		caseRunner[any](t, v)
+		caseRunner[any](t, safe)
 	}
 }
 
 func TestIndexes(t *testing.T) {
 	for _, v := range indexCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestWhere(t *testing.T) {
 	for _, v := range whereCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestMap(t *testing.T) {
 	for _, v := range mapCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestReduce(t *testing.T) {
 	for _, v := range reduceCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestEvery(t *testing.T) {
 	for _, v := range everyCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestSome(t *testing.T) {
 	for _, v := range someCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestNone(t *testing.T) {
 	for _, v := range noneCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestPop(t *testing.T) {
 	for _, v := range popCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestShift(t *testing.T) {
 	for _, v := range shiftCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestString(t *testing.T) {
 	for _, v := range stringCases {
+		safe := cloneSafe(v)
 		caseRunner[string](t, v)
+		caseRunner[string](t, safe)
 	}
 }
 
 func TestSet(t *testing.T) {
 	for _, v := range setCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestInterval(t *testing.T) {
 	for _, v := range intervalCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
 	}
 }
 
 func TestSort(t *testing.T) {
 	for _, v := range sortCases {
+		safe := cloneSafe(v)
 		caseRunner[string](t, v)
+		caseRunner[string](t, safe)
 	}
 }
 
 func TestClear(t *testing.T) {
 	for _, v := range clearCases {
+		safe := cloneSafe(v)
 		caseRunner[bool](t, v)
+		caseRunner[bool](t, safe)
+	}
+}
+
+func TestSafety(t *testing.T) {
+	for _, v := range specificCases {
+		caseRunner[bool](t, v)
+	}
+}
+
+func cloneSafe[T comparable](t listTestCase[T]) listTestCase[T] {
+	return listTestCase[T]{
+		name:              strings.Replace(t.name, "DynamicList", "SafeList", -1),
+		input:             NewSafeList[any](t.input.Elements()...),
+		parameters:        t.parameters,
+		expectPanic:       t.expectPanic,
+		expected:          t.expected,
+		runnable:          t.runnable,
+		nilTypeComparison: t.nilTypeComparison,
 	}
 }

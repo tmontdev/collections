@@ -11,6 +11,13 @@ func NewDynamicList[T any](elements ...T) *DynamicList[T] {
 	return l
 }
 
+// NewDynamicListFrom returns a new DynamicList with the given elements
+func NewDynamicListFrom[T any](elements []T) *DynamicList[T] {
+	l := &DynamicList[T]{}
+	l.Push(elements...)
+	return l
+}
+
 // DynamicList is a simple slice implementation of List[T].
 // As a slice, it is dynamically-sized and not thread-safe.
 type DynamicList[T any] []T

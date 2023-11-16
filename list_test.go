@@ -20,7 +20,7 @@ type listTestCase[T comparable] struct {
 var empty = []any{}
 var oneTwoThree = []any{1, 2, 3}
 
-var oneTwoThreeList = NewDynamicList[any](1, 2, 3)
+var oneTwoThreeList = NewList[any](1, 2, 3)
 
 func caseRunner[T comparable](t *testing.T, c listTestCase[T]) {
 	println("caseRunner: Running test case: ", c.name, "...")
@@ -58,8 +58,8 @@ func caseRunner[T comparable](t *testing.T, c listTestCase[T]) {
 
 var lengthCases = []listTestCase[int]{
 	{
-		name:        "DynamicList.Length.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.Length.Empty",
+		input:       NewList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    0,
@@ -68,8 +68,8 @@ var lengthCases = []listTestCase[int]{
 		},
 	},
 	{
-		name:        "DynamicList.Clone.Length.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.Clone.Length.Empty",
+		input:       NewList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    0,
@@ -78,8 +78,8 @@ var lengthCases = []listTestCase[int]{
 		},
 	},
 	{
-		name:        "DynamicList.Length.Value",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Length.Value",
+		input:       NewListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    len(oneTwoThreeList.Elements()),
@@ -88,8 +88,8 @@ var lengthCases = []listTestCase[int]{
 		},
 	},
 	{
-		name:        "DynamicList.Clone.Length.Value",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Clone.Length.Value",
+		input:       NewListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    len(oneTwoThreeList.Elements()),
@@ -101,8 +101,8 @@ var lengthCases = []listTestCase[int]{
 
 var emptyCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.IsEmpty.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.IsEmpty.Empty",
+		input:       NewList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
@@ -111,8 +111,8 @@ var emptyCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.IsNotEmpty.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.IsNotEmpty.Empty",
+		input:       NewList[any](empty...),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
@@ -121,8 +121,8 @@ var emptyCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.IsNotEmpty.Filled",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.IsNotEmpty.Filled",
+		input:       NewListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    true,
@@ -131,8 +131,8 @@ var emptyCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.IsEmpty.Filled",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.IsEmpty.Filled",
+		input:       NewListFrom[any](oneTwoThree),
 		parameters:  nil,
 		expectPanic: false,
 		expected:    false,
@@ -144,8 +144,8 @@ var emptyCases = []listTestCase[bool]{
 
 var atCases = []listTestCase[any]{
 	{
-		name:              "DynamicList.At.Empty",
-		input:             NewDynamicList[any](empty...),
+		name:              "SimpleList.At.Empty",
+		input:             NewList[any](empty...),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          nil,
@@ -155,8 +155,8 @@ var atCases = []listTestCase[any]{
 		},
 	},
 	{
-		name:              "DynamicList.At.MutableValue",
-		input:             NewDynamicListFrom[any](oneTwoThree),
+		name:              "SimpleList.At.MutableValue",
+		input:             NewListFrom[any](oneTwoThree),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          true,
@@ -168,8 +168,8 @@ var atCases = []listTestCase[any]{
 		},
 	},
 	{
-		name:              "DynamicList.ElementAt.Empty",
-		input:             NewDynamicList[any](empty...),
+		name:              "SimpleList.ElementAt.Empty",
+		input:             NewList[any](empty...),
 		parameters:        nil,
 		expectPanic:       true,
 		expected:          false,
@@ -179,8 +179,8 @@ var atCases = []listTestCase[any]{
 		},
 	},
 	{
-		name:              "DynamicList.ElementAt.NonMutableValue",
-		input:             NewDynamicListFrom[any](oneTwoThree),
+		name:              "SimpleList.ElementAt.NonMutableValue",
+		input:             NewListFrom[any](oneTwoThree),
 		parameters:        nil,
 		expectPanic:       false,
 		expected:          true,
@@ -188,12 +188,12 @@ var atCases = []listTestCase[any]{
 		runnable: func(t *testing.T, list List[any], parameters []any) any {
 			n := list.ElementAt(0)
 			if n != 1 {
-				t.Error("DynamicList.ElementAt is different from expected")
+				t.Error("SimpleList.ElementAt is different from expected")
 			}
 			n = 4
 			a := list.ElementAt(0)
 			if a != 1 {
-				t.Error("DynamicList.ElementAt is different from expected")
+				t.Error("SimpleList.ElementAt is different from expected")
 			}
 			return a != n
 		},
@@ -202,8 +202,8 @@ var atCases = []listTestCase[any]{
 
 var indexCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.FirstElement.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.FirstElement.Empty",
+		input:       NewList[any](empty...),
 		expected:    false,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -211,8 +211,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.First.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.First.Empty",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -220,8 +220,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.LastElement.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.LastElement.Empty",
+		input:       NewList[any](empty...),
 		expected:    false,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -229,8 +229,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Last.Empty",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.Last.Empty",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -238,8 +238,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstIndexWhere.NotSatisfied",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.FirstIndexWhere.NotSatisfied",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -249,8 +249,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstWhere.NotSatisfied",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.FirstWhere.NotSatisfied",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -260,8 +260,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstWhere.Satisfied",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.FirstWhere.Satisfied",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -271,8 +271,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstElementWhere.NotSatisfied",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.FirstElementWhere.NotSatisfied",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -282,8 +282,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstElementWhere.Satisfied",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.FirstElementWhere.Satisfied",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -293,8 +293,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.LastWhere.NotSatisfied",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.LastWhere.NotSatisfied",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -304,8 +304,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.LastWhere.Satisfied",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.LastWhere.Satisfied",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -315,8 +315,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstIndexWhere.Even",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.FirstIndexWhere.Even",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -326,8 +326,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.FirstIndexWhere.Odd",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.FirstIndexWhere.Odd",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -337,8 +337,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.LastIndexWhere.Odd",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.LastIndexWhere.Odd",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -349,8 +349,8 @@ var indexCases = []listTestCase[bool]{
 	},
 
 	{
-		name:        "DynamicList.LastElementWhere.NotSatisfied",
-		input:       NewDynamicList[any](empty...),
+		name:        "SimpleList.LastElementWhere.NotSatisfied",
+		input:       NewList[any](empty...),
 		expected:    true,
 		expectPanic: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -360,8 +360,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.LastElementWhere.Satisfied",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.LastElementWhere.Satisfied",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -371,8 +371,8 @@ var indexCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.IndexWhere.Odd",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.IndexWhere.Odd",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -385,8 +385,8 @@ var indexCases = []listTestCase[bool]{
 }
 var whereCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Where.Odd",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Where.Odd",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -397,8 +397,8 @@ var whereCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Where.Even",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Where.Even",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -411,8 +411,8 @@ var whereCases = []listTestCase[bool]{
 }
 var mapCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Map.String",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Map.String",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -426,8 +426,8 @@ var mapCases = []listTestCase[bool]{
 
 var reduceCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Reduce.Sum",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Reduce.Sum",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -437,14 +437,14 @@ var reduceCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Reduce.Map",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Reduce.Map",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			strs := list.Reduce(func(acc any, candidate any, idx int) any {
 				return acc.(List[string]).Push(fmt.Sprint(candidate))
-			}, NewDynamicList[string]()).(List[string])
+			}, NewList[string]()).(List[string])
 			return strs.ElementAt(0) == "1" && strs.ElementAt(1) == "2" && strs.ElementAt(2) == "3" && strs.Length() == 3
 		},
 	},
@@ -452,8 +452,8 @@ var reduceCases = []listTestCase[bool]{
 
 var everyCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Every.lt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Every.lt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -463,8 +463,8 @@ var everyCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Every.gt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Every.gt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -474,8 +474,8 @@ var everyCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Every.gt.false",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Every.gt.false",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -488,8 +488,8 @@ var everyCases = []listTestCase[bool]{
 
 var someCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Some.lt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Some.lt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -499,8 +499,8 @@ var someCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Some.gt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Some.gt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -510,8 +510,8 @@ var someCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Every.eq",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Every.eq",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -522,8 +522,8 @@ var someCases = []listTestCase[bool]{
 	},
 
 	{
-		name:        "DynamicList.Every.eq.false",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Every.eq.false",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -536,8 +536,8 @@ var someCases = []listTestCase[bool]{
 
 var noneCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.None.lt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.None.lt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -547,8 +547,8 @@ var noneCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.None.gt",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.None.gt",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -558,8 +558,8 @@ var noneCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.None.eq",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.None.eq",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    false,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -570,8 +570,8 @@ var noneCases = []listTestCase[bool]{
 	},
 
 	{
-		name:        "DynamicList.None.eq.false",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.None.eq.false",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -584,8 +584,8 @@ var noneCases = []listTestCase[bool]{
 
 var popCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Pop",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Pop",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -595,8 +595,8 @@ var popCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Push",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Push",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -605,8 +605,8 @@ var popCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Pop.Double",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Pop.Double",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -618,8 +618,8 @@ var popCases = []listTestCase[bool]{
 
 var shiftCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Shift",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Shift",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -629,8 +629,8 @@ var shiftCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "DynamicList.Shift.Double",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Shift.Double",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -643,8 +643,8 @@ var shiftCases = []listTestCase[bool]{
 
 var setCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Set",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Set",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -657,8 +657,8 @@ var setCases = []listTestCase[bool]{
 
 var stringCases = []listTestCase[string]{
 	{
-		name:        "DynamicList.String",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.String",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    fmt.Sprint(oneTwoThreeList.Elements()),
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) string {
@@ -669,8 +669,8 @@ var stringCases = []listTestCase[string]{
 
 var intervalCases = []listTestCase[bool]{
 	{
-		name:        "DynamicList.Interval",
-		input:       NewDynamicListFrom[any](oneTwoThree),
+		name:        "SimpleList.Interval",
+		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
@@ -682,8 +682,8 @@ var intervalCases = []listTestCase[bool]{
 
 var sortCases = []listTestCase[string]{
 	{
-		name:        "DynamicList.Sort.Int.Esc",
-		input:       NewDynamicList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
+		name:        "SimpleList.Sort.Int.Esc",
+		input:       NewList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
 		expected:    fmt.Sprint([]any{1, 3, 5, 15, 23, 24, 67, 89, 142, 439, 1203, 1981}),
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) string {
@@ -694,8 +694,8 @@ var sortCases = []listTestCase[string]{
 		},
 	},
 	{
-		name:        "DynamicList.Sort.Int.Desc",
-		input:       NewDynamicList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
+		name:        "SimpleList.Sort.Int.Desc",
+		input:       NewList[any](5, 1981, 3, 15, 142, 1, 23, 89, 67, 1203, 439, 24),
 		expected:    fmt.Sprint([]any{1981, 1203, 439, 142, 89, 67, 24, 23, 15, 5, 3, 1}),
 		expectPanic: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) string {
@@ -709,8 +709,8 @@ var sortCases = []listTestCase[string]{
 
 var clearCases = []listTestCase[bool]{
 	{
-		name:     "DynamicList.Clear.IsEmpty",
-		input:    NewDynamicListFrom[any](oneTwoThree),
+		name:     "SimpleList.Clear.IsEmpty",
+		input:    NewListFrom[any](oneTwoThree),
 		expected: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			return list.Clear().IsEmpty()
@@ -720,8 +720,8 @@ var clearCases = []listTestCase[bool]{
 
 var specificCases = []listTestCase[bool]{
 	{
-		name:     "DynamicList.ThreadSafety",
-		input:    NewDynamicListFrom[any](oneTwoThree).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...),
+		name:     "SimpleList.ThreadSafety",
+		input:    NewListFrom[any](oneTwoThree).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...).Push(oneTwoThree...),
 		expected: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			var wg sync.WaitGroup
@@ -738,16 +738,16 @@ var specificCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:     "DynamicList.IsThreadSafe",
-		input:    NewDynamicListFrom[any](oneTwoThree),
+		name:     "SimpleList.IsThreadSafe",
+		input:    NewListFrom[any](oneTwoThree),
 		expected: false,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			return list.IsThreadSafe()
 		},
 	},
 	{
-		name:     "DynamicList.IsDynamicallySized",
-		input:    NewDynamicListFrom[any](oneTwoThree),
+		name:     "SimpleList.IsDynamicallySized",
+		input:    NewListFrom[any](oneTwoThree),
 		expected: true,
 		runnable: func(t *testing.T, list List[any], parameters []any) bool {
 			return list.IsDynamicallySized()
@@ -933,7 +933,7 @@ func TestSafety(t *testing.T) {
 
 func cloneSafe[T comparable](t listTestCase[T]) listTestCase[T] {
 	return listTestCase[T]{
-		name:              strings.Replace(t.name, "DynamicList", "SafeList", -1),
+		name:              strings.Replace(t.name, "SimpleList", "SafeList", -1),
 		input:             NewSafeList[any](t.input.Elements()...),
 		parameters:        t.parameters,
 		expectPanic:       t.expectPanic,

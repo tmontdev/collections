@@ -1,7 +1,7 @@
 package collections
 
 // List is an interface which provides helper methods to easily handle arrays and slices.
-// Each implementation may have specific behaviors. The default implementation is *DynamicList
+// Each implementation may have specific behaviors. The default implementation is *SimpleList
 type List[T any] interface {
 	// Length returns how many elements are in the List.
 	Length() int

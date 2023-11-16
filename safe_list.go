@@ -3,7 +3,7 @@ package collections
 import "sync"
 
 type SafeList[T any] struct {
-	l *DynamicList[T]
+	l *SimpleList[T]
 	sync.Mutex
 }
 
@@ -20,12 +20,12 @@ func (s *SafeList[T]) self(exec func() any) *SafeList[T] {
 
 // NewSafeList returns a new SafeList with the given elements
 func NewSafeList[T any](elements ...T) *SafeList[T] {
-	return &SafeList[T]{l: NewDynamicList(elements...)}
+	return &SafeList[T]{l: NewList(elements...)}
 }
 
 // NewSafeListFrom returns a new SafeList with the given slice
 func NewSafeListFrom[T any](elements []T) *SafeList[T] {
-	return &SafeList[T]{l: NewDynamicListFrom(elements)}
+	return &SafeList[T]{l: NewListFrom(elements)}
 }
 
 // Length returns how many elements are in the SafeList.
@@ -83,7 +83,7 @@ func (s *SafeList[T]) Push(elements ...T) List[T] {
 func (s *SafeList[T]) Clone() List[T] {
 	return &SafeList[T]{l: protect[List[T], T](s, func() List[T] {
 		return s.l.Clone()
-	}).(*DynamicList[T])}
+	}).(*SimpleList[T])}
 }
 
 // FirstElement returns the first element in the SafeList.
@@ -166,23 +166,23 @@ func (s *SafeList[T]) LastElementWhere(handler Predicate[T]) T {
 	})
 }
 
-// IndexWhere returns a DynamicList[int] for all element index which satisfies the predicate.
-// If no element satisfies the predicate, an empty DynamicList will be returned.
+// IndexWhere returns a SimpleList[int] for all element index which satisfies the predicate.
+// If no element satisfies the predicate, an empty SimpleList will be returned.
 func (s *SafeList[T]) IndexWhere(handler Predicate[T]) List[int] {
 	return protect[List[int], T](s, func() List[int] {
 		return s.l.IndexWhere(handler)
 	})
 }
 
-// Where returns a DynamicList with all the elements which satisfies the predicate.
-// If no element satisfies the predicate, an empty DynamicList will be returned.
+// Where returns a SimpleList with all the elements which satisfies the predicate.
+// If no element satisfies the predicate, an empty SimpleList will be returned.
 func (s *SafeList[T]) Where(handler Predicate[T]) List[T] {
 	return protect[List[T], T](s, func() List[T] {
 		return s.l.Where(handler)
 	})
 }
 
-// Map iterates over the element of the SafeList calling Mapper, and return a new DynamicList with the results.
+// Map iterates over the element of the SafeList calling Mapper, and return a new SimpleList with the results.
 func (s *SafeList[T]) Map(handler Mapper[T]) List[any] {
 	return protect[List[any], T](s, func() List[any] {
 		return s.l.Map(handler)
@@ -239,7 +239,7 @@ func (s *SafeList[T]) Set(index int, element T) List[T] {
 	})
 }
 
-// Interval returns a new DynamicList with all elements between the *from* and *to* indexes.
+// Interval returns a new SimpleList with all elements between the *from* and *to* indexes.
 func (s *SafeList[T]) Interval(from, to int) List[T] {
 	return protect[List[T], T](s, func() List[T] {
 		return s.l.Interval(from, to)

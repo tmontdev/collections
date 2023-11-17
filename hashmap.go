@@ -121,7 +121,7 @@ func (m HashMap[K, V]) Values() List[V] {
 }
 
 // Merge sets all key/value pairs from the given map in itself.
-// If replace is false, ignore key conflicts
+// Ignores key conflicts when replace is false
 func (m HashMap[K, V]) Merge(from map[K]V, replace bool) Map[K, V] {
 	for k, v := range from {
 		if !m.Has(k) || replace {

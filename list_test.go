@@ -1,6 +1,7 @@
 package collections
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"sync"
@@ -789,6 +790,44 @@ var specificCases = []listTestCase[bool]{
 	},
 }
 
+var encodeCases = []listTestCase[string]{
+	{
+		name:        "SimpleList.MarshallJSON",
+		input:       oneTwoThreeList,
+		parameters:  nil,
+		expectPanic: false,
+		expected:    "[1,2,3]",
+		runnable: func(t *testing.T, l List[any], parameters []any) string {
+			bytes, err := json.Marshal(l)
+			if err != nil {
+				panic(err)
+			}
+			return string(bytes)
+		},
+		nilTypeComparison: false,
+	},
+	{
+		name:        "SimpleList.UnmarshallJSON",
+		input:       NewList[any](),
+		parameters:  nil,
+		expectPanic: false,
+		expected:    "[1,2,3]",
+		runnable: func(t *testing.T, l List[any], parameters []any) string {
+			bytes := []byte("[1, 2, 3]")
+			err := json.Unmarshal(bytes, l)
+			if err != nil {
+				panic(err)
+			}
+			bytes, err = json.Marshal(l)
+			if err != nil {
+				panic(err)
+			}
+			return string(bytes)
+		},
+		nilTypeComparison: false,
+	},
+}
+
 func TestLength(t *testing.T) {
 	for _, v := range lengthCases {
 		safe := cloneSafe(v)
@@ -925,7 +964,15 @@ func TestClear(t *testing.T) {
 	}
 }
 
-func TestSafety(t *testing.T) {
+func TestEncode(t *testing.T) {
+	for _, v := range encodeCases {
+		safe := cloneSafe(v)
+		caseRunner[string](t, v)
+		caseRunner[string](t, safe)
+	}
+}
+
+func TestSpecific(t *testing.T) {
 	for _, v := range specificCases {
 		caseRunner[bool](t, v)
 	}

@@ -186,7 +186,7 @@ func (s *SafeList[T]) Where(handler Predicate[T]) List[T] {
 	})
 }
 
-// Map iterates over the element of the SafeList calling Mapper, and return a new SimpleList with the results.
+// HashMap iterates over the element of the SafeList calling Mapper, and return a new SimpleList with the results.
 func (s *SafeList[T]) Map(handler Mapper[T]) List[any] {
 	return protect[List[any], T](s, func() List[any] {
 		return s.l.Map(handler)

@@ -411,7 +411,7 @@ var whereCases = []listTestCase[bool]{
 }
 var mapCases = []listTestCase[bool]{
 	{
-		name:        "SimpleList.Map.String",
+		name:        "SimpleList.HashMap.String",
 		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,
@@ -437,7 +437,7 @@ var reduceCases = []listTestCase[bool]{
 		},
 	},
 	{
-		name:        "SimpleList.Reduce.Map",
+		name:        "SimpleList.Reduce.HashMap",
 		input:       NewListFrom[any](oneTwoThree),
 		expected:    true,
 		expectPanic: false,

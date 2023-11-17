@@ -3,7 +3,7 @@ package collections
 // List is an interface which provides helper methods to easily handle arrays and slices.
 // Each implementation may have specific behaviors. The default implementation is *SimpleList
 type List[T any] interface {
-	// Length returns how many elements are in the List.
+	// Length returns how many Elements are in the List.
 	Length() int
 
 	// IsEmpty returns true if there are *no* Elements stored in the List.
@@ -77,7 +77,7 @@ type List[T any] interface {
 	// If no element satisfies the predicate, an empty List will be returned.
 	Where(handler Predicate[T]) List[T]
 
-	// Map iterates over the element of the List calling Mapper, and return a new List with the results.
+	// Map iterates over the elements of the List calling Mapper, and return a new List with the results.
 	Map(handler Mapper[T]) List[any]
 
 	// Reduce executes the Reducer for each element from the list with the given accumulator, and each result will be the accumulator for the next.

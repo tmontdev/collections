@@ -190,7 +190,7 @@ func (l *SimpleList[T]) Where(handler Predicate[T]) List[T] {
 	return selected
 }
 
-// HashMap iterates over the element of the SimpleList calling Mapper, and return a new SimpleList with the results.
+// Map iterates over the element of the SimpleList calling Mapper, and return a new SimpleList with the results.
 func (l *SimpleList[T]) Map(handler Mapper[T]) List[any] {
 	mapped := NewList[any]()
 	for _, v := range l.Elements() {

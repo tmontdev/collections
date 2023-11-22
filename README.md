@@ -35,7 +35,7 @@ import "github.com/tmontdev/collections"
 
 ## Working with Maps
 
-> collections package provide the [Map](https://godocs.io/github.com/tmontdev/collections#Map) interface with helper methods to make your work with maps easier. The default implementation of [Map](https://godocs.io/github.com/tmontdev/collections#Map) is the [HashMap](https://godocs.io/github.com/tmontdev/collections#HashMap) which is based on a built-in map type.collections package provide the [Map](https://godocs.io/github.com/tmontdev/collections#Map) interface, with helper methods to turn your work easier.
+> collections package provide the [Map](https://godocs.io/github.com/tmontdev/collections#Map) interface with helper methods to make your work with maps easier. The default implementation of [Map](https://godocs.io/github.com/tmontdev/collections#Map) is the [HashMap](https://godocs.io/github.com/tmontdev/collections#HashMap) which is based on a built-in map type.
 
 Let's make an example of Telephone Spelling Alphabet with Maps, and see how it works!
 

@@ -108,6 +108,9 @@ type List[T any] interface {
 	// String returns a string representation of the List.
 	String() string
 
+	// Join returns the string representation of each element in the List, separated by the given separator
+	Join(separator string) string
+
 	// Sort receives a Sorter function to sort its elements, and returns itself after sorted.
 	Sort(sorter Sorter[T]) List[T]
 

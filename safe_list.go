@@ -257,6 +257,13 @@ func (s *SafeList[T]) String() string {
 	})
 }
 
+// Join returns the string representation of each element in the List, separated by the given separator
+func (s *SafeList[T]) Join(separator string) string {
+	return protect[string, T](s, func() string {
+		return s.l.Join(separator)
+	})
+}
+
 // Sort receives a Sorter function to sort its elements, and returns itself after sorted.
 func (s *SafeList[T]) Sort(sorter Sorter[T]) List[T] {
 	return s.self(func() any {

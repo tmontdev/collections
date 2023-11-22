@@ -826,6 +826,30 @@ var encodeCases = []listTestCase[string]{
 		},
 		nilTypeComparison: false,
 	},
+	{
+		name:        "SimpleList.Join",
+		input:       NewList[any](1, 2, 3),
+		parameters:  nil,
+		expectPanic: false,
+		expected:    "1|2|3",
+		runnable: func(t *testing.T, l List[any], parameters []any) string {
+
+			return l.Join("|")
+		},
+		nilTypeComparison: false,
+	},
+	{
+		name:        "SimpleList.Join.Empty",
+		input:       NewList[any](),
+		parameters:  nil,
+		expectPanic: false,
+		expected:    "",
+		runnable: func(t *testing.T, l List[any], parameters []any) string {
+
+			return l.Join("|")
+		},
+		nilTypeComparison: false,
+	},
 }
 
 func TestLength(t *testing.T) {

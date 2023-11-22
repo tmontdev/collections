@@ -268,6 +268,21 @@ func (l *SimpleList[T]) String() string {
 	return fmt.Sprint(l.Elements())
 }
 
+// Join returns the string representation of each element in the List, separated by the given separator
+func (l *SimpleList[T]) Join(separator string) (joined string) {
+	if l.IsEmpty() {
+		return
+	}
+	for i, e := range l.Elements() {
+		if i == 0 {
+			joined += fmt.Sprintf("%v", e)
+			continue
+		}
+		joined += fmt.Sprintf("%s%v", separator, e)
+	}
+	return
+}
+
 // Sort receives a Sorter function to sort its elements, and returns itself after sorted.
 func (l *SimpleList[T]) Sort(sorter Sorter[T]) List[T] {
 	changed := true

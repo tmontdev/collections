@@ -50,5 +50,9 @@ type Map[K comparable, V any] interface {
 
 	// Merge sets all key/value pairs from the given map in itself.
 	// If replace is false, ignore key conflicts
-	Merge(source map[K]V, replace bool) Map[K, V]
+	Merge(source Map[K, V], replace bool) Map[K, V]
+
+	Builtin() map[K]V
+
+	HashMap() HashMap[K, V]
 }

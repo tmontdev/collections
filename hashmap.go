@@ -1,5 +1,11 @@
 package collections
 
+// MapFrom returns a new HashMap from the given built-in source map.
+// Changes in the returned HashMap will not affect the source map
+func MapFrom[K comparable, V any](source map[K]V) Map[K, V] {
+	return HashMap[K, V](source).Clone()
+}
+
 // HashMap is the default implementation of Map. Consider it a built-in map (but super powered)
 type HashMap[K comparable, V any] map[K]V
 
@@ -122,11 +128,19 @@ func (m HashMap[K, V]) Values() List[V] {
 
 // Merge sets all key/value pairs from the given map in itself.
 // Ignores key conflicts when replace is false
-func (m HashMap[K, V]) Merge(from map[K]V, replace bool) Map[K, V] {
-	for k, v := range from {
+func (m HashMap[K, V]) Merge(from Map[K, V], replace bool) Map[K, V] {
+	for k, v := range from.Builtin() {
 		if !m.Has(k) || replace {
 			m.Set(k, v)
 		}
 	}
+	return m
+}
+
+func (m HashMap[K, V]) Builtin() map[K]V {
+	return m
+}
+
+func (m HashMap[K, V]) HashMap() HashMap[K, V] {
 	return m
 }

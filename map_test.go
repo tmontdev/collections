@@ -149,18 +149,20 @@ func TestMap_Merge(t *testing.T) {
 		"key2": 2,
 		"key3": 3,
 	}
-	origin.Merge(source, false)
+	origin.Merge(MapFrom[string, int](source), false)
 	if origin.Get("key2") != 3 {
 		t.Error("merge should not be altered, if replace flag is not true")
 	}
 	if origin.Length() != 3 {
 		t.Error("merge should add all missing key/value pairs, event if replace is false")
 	}
-	cloned.Merge(source, true)
+	cloned.Merge(MapFrom[string, int](source), true)
 	if cloned.Get("key2") != 2 {
 		t.Error("Merge should not be altered, if replace flag is not true")
 	}
 	if cloned.Length() != 3 {
 		t.Error("merge should add all missing key/value pairs, event if replace is false")
 	}
+	hash := cloned.HashMap()
+	println(hash)
 }

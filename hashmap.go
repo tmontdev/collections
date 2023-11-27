@@ -1,5 +1,7 @@
 package collections
 
+import "encoding/json"
+
 // MapFrom returns a new HashMap from the given built-in source map.
 // Changes in the returned HashMap will not affect the source map
 func MapFrom[K comparable, V any](source map[K]V) Map[K, V] {
@@ -143,4 +145,13 @@ func (m HashMap[K, V]) Builtin() map[K]V {
 
 func (m HashMap[K, V]) HashMap() HashMap[K, V] {
 	return m
+}
+
+func (m HashMap[K, V]) Struct(str any) error {
+	bytes, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, str)
+	return err
 }

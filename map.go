@@ -55,4 +55,6 @@ type Map[K comparable, V any] interface {
 	Builtin() map[K]V
 
 	HashMap() HashMap[K, V]
+
+	Struct(str any) error
 }

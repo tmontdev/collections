@@ -27,23 +27,20 @@ However there is intention to keep improving, so feel free to suggest, discuss a
 
 # Quick Start
 
-Once installed, simply import it to your code with
-
-```go
-import "github.com/tmontdev/collections"
-```
-
 ## Working with Maps
 
-> collections package provide the [Map](https://godocs.io/github.com/tmontdev/collections#Map) interface with helper methods to make your work with maps easier. The default implementation of [Map](https://godocs.io/github.com/tmontdev/collections#Map) is the [HashMap](https://godocs.io/github.com/tmontdev/collections#HashMap) which is based on a built-in map type.
+> collections package provide the [IMap](https://godocs.io/github.com/tmontdev/collections/maps/#IMap) interface with helper methods to make your work with maps easier. The default implementation of [IMap](https://godocs.io/github.com/tmontdev/collections#Map) is the [Map](https://godocs.io/github.com/tmontdev/collectionsmaps/#Map) which is based on a built-in map type.
 
 Let's make an example of Telephone Spelling Alphabet with Maps, and see how it works!
 
 ```go
+import (
+    "github.com/tmontdev/collections/maps"
+)
 // NATO Alphabet standard words is commonly used for accurately radio and telephone communication
-// standardRadioAlphabet returns a collections.HashMap[rune, string]
-func standardRadioAlphabet() collections.HashMap[rune, string] {
-	// Note: returning a built-in map is accepted, as the collections.HashMap is a map type
+// standardRadioAlphabet returns a maps.Map[rune, string]
+func standardRadioAlphabet() maps.Map[rune, string] {
+	// Note: returning a built-in map is accepted, as the maps.Map is a map type
 	return map[rune]string{
 		'A': "Alpha", 'B': "Bravo", 'C': "Charlie", 'D': "Delta",
 		'E': "Echo", 'F': "Foxtrot", 'K': "Kilo", 'L': "Lima", 'M': "Mike",
@@ -54,7 +51,7 @@ func standardRadioAlphabet() collections.HashMap[rune, string] {
 }
 
 func main() {
-	// built-in map handled here as collections.HashMap now have super-powers
+	// built-in map handled here as maps.Map now have super-powers
 	// use .Where() to get a new Map with all the key/value pairs which satisfies your predicate
 	longSpells := standardRadioAlphabet().Where(func(letter rune, word string) bool {
 		return len(word) > 4 // here we want all spelling with length greater than 4
@@ -71,7 +68,7 @@ Ok! Now we may add number spelling too. And maybe we prefer to use custom spelli
 So let's add some code to our file!
 
 ```go
-func standardRadioNumbers() collections.HashMap[rune, string] {
+func standardRadioNumbers() maps.Map[rune, string] {
 	return map[rune]string{
 		'1': "One",
 		'2': "Two",
@@ -86,7 +83,7 @@ func standardRadioNumbers() collections.HashMap[rune, string] {
 	}
 }
 
-func preferredRadioSpelling() collections.HashMap[rune, string] {
+func preferredRadioSpelling() maps.Map[rune, string] {
 	return map[rune]string{
 		'9': "Niner", // commonly spelled niner, cause nine and five are easily confused
 		'X': "X-Men", // because you may work at Marvel comics now lol
@@ -101,16 +98,16 @@ func main() {
 	letterSpelling := standardRadioAlphabet()
 	numberSpelling := standardRadioNumbers()
 	// let's get words and letters together in a single map
-	// Note: Merge() method receives a second parameter, the "replace" here passed as false, which means that we don't want to replace values, in case of conflicted keys.
-	// Note: Merge() method alters the reference map. If you don't want your original map to be altered, use Clone() before it.
+	// Note: Complement() method sets key/value pairs from the given map, into itself... on key conflict, keeps original value
+	// Note: SetFrom() method sets key/value pairs from the given map, into itself... on key conflict, sets the new value from given map
 	// Note: Clone() method create and returns a new map, identical to the original.
 	// Note: In order to keep letterSpelling map unaltered, let's merge numberSpelling in its Clone
-	standardSpelling := letterSpelling.Clone().Merge(numberSpelling, false)
+	standardSpelling := letterSpelling.Clone().Complement(numberSpelling)
 
 	// now we are going to replace our preferred spelling words in the alphabet.
-	// Note: In order to replace our preferred spelling words, let's pass "replace" parameter as true
+	// Note: In order to replace our preferred spelling words, let's use SetFrom() method instead of Complement()
 	// Note: In order to keep standardSpelling map unaltered, let's merge preferredRadioSpelling() result in its Clone
-	customSpelling := standardSpelling.Clone().Merge(preferredRadioSpelling(), true)
+	customSpelling := standardSpelling.Clone().SetFrom(preferredRadioSpelling())
 
 	println(customSpelling.Get('X'))   // "X-men"
 	println(standardSpelling.Get('X')) // "X-Ray"
@@ -121,32 +118,37 @@ func main() {
 }
 ```
 
-Map interface have many other methods to make your work with maps easier, without giving up performance. [To know more about Maps, please refer to Map Godoc](https://godocs.io/github.com/tmontdev/collections#Map)
+Map interface have many other methods to make your work with maps easier, without giving up performance. [To know more about Maps, please refer to Map Godoc](https://godocs.io/github.com/tmontdev/collections/maps#IMap)
 
 ## Working with Lists
 
 > We're gonna use the code of our previous section with maps, so keep it :D
 
-> collections package provide the [List](https://godocs.io/github.com/tmontdev/collections#List) interface with helper methods to make your work with arrays and slices easier. The default implementation of [List](https://godocs.io/github.com/tmontdev/collections#List) is the [SimpleList](https://godocs.io/github.com/tmontdev/collections#SimpleList) which is based on a built-in slice pointer. (see [why do we prefer slice pointers](https://medium.com/swlh/golang-tips-why-pointers-to-slices-are-useful-and-how-ignoring-them-can-lead-to-tricky-bugs-cac90f72e77b#:~:text=The%20pointer%20to%20a%20slice,those%20who%20call%20the%20function.))
-> We also provide the [SafeList](https://godocs.io/github.com/tmontdev/collections#SafeList) implementation which is [thread-safe](https://en.wikipedia.org/wiki/Thread_safety).
+> collections package provide the [IList](https://godocs.io/github.com/tmontdev/collections/lists#IList) interface with helper methods to make your work with arrays and slices easier. The default implementation of [IList](https://godocs.io/github.com/tmontdev/collections/lists#IList) is the [List](https://godocs.io/github.com/tmontdev/collections/lists/#List) which is based on a built-in slice pointer. (see [why do we prefer slice pointers](https://medium.com/swlh/golang-tips-why-pointers-to-slices-are-useful-and-how-ignoring-them-can-lead-to-tricky-bugs-cac90f72e77b#:~:text=The%20pointer%20to%20a%20slice,those%20who%20call%20the%20function.))
+> We also provide the [SafeList](https://godocs.io/github.com/tmontdev/collections/lists#SafeList) implementation which is [thread-safe](https://en.wikipedia.org/wiki/Thread_safety).
 
-Now that our spelling map is complete, make use of it! Let’s declare a list of words to spell, and see how [List](https://godocs.io/github.com/tmontdev/collections#List) works.
+Now that our spelling map is complete, make use of it! Let’s declare a list of words to spell, and see how [IList](https://godocs.io/github.com/tmontdev/collections/lists#IList) works.
 
 ```go
+import (
+    "github.com/tmontdev/collections/maps"
+    "github.com/tmontdev/collections/lists"
+)
+
 // our official alphabet spelling
-func customSpelling() collections.Map[rune, string] {
+func customSpelling() maps.IMap[rune, string] {
 	// uses old code here
 	return standardRadioAlphabet().Merge(standardRadioNumbers(), false).Merge(preferredRadioSpelling(), true)
 }
 
 // returns a list of runes, which is the letters of the given word
-func lettersFrom(word string) collections.List[rune] {
+func lettersFrom(word string) lists.IList[rune] {
 	// creates a list from the slice of runes
-	return collections.NewListFrom[rune]([]rune(word))
+	return lists.NewListFrom[rune]([]rune(word))
 }
 
 // returns a list of words, which is the spelling of the given word
-func spell(word string) collections.List[string] {
+func spell(word string) lists.IList[string] {
 	spelling := collections.NewList[string]()
 	spellingReference := customSpelling()
 	letters := lettersFrom(word)
@@ -169,13 +171,13 @@ func main() {
 
 	//See Reduce() docs for more information
 	spelledWords := words.Reduce(func(acc any, word string, idx int) any {
-		return acc.(collections.HashMap[string, collections.List[string]]).Set(word, spell(word))
-	}, collections.HashMap[string, collections.List[string]]{})
+		return acc.(maps.Map[string, lists.IList[string]]).Set(word, spell(word))
+	}, maps.Map[string, lists.IList[string]]{})
 	fmt.Printf("%v", spelledWords)
 }
 ```
 
-List interface have many other methods to easily filter, sort, and transform your slices, without giving up performance. [To know more about Lists, please refer to List Godoc](https://godocs.io/github.com/tmontdev/collections#Map)
+List interface have many other methods to easily filter, sort, and transform your slices, without giving up performance. [To know more about Lists, please refer to List Godoc](https://godocs.io/github.com/tmontdev/collections/lists#IList)
 
 # Usage [![Go Documentation](https://godocs.io/github.com/tmontdev/collections?status.svg)](https://godocs.io/github.com/tmontdev/collections)
 

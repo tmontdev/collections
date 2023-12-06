@@ -1,8 +1,6 @@
-package collections
+package lists
 
 type Predicate[T any] func(T) bool
-
-type KeyValuePredicate[K comparable, V any] func(K, V) bool
 
 type Mapper[T any] func(T) any
 

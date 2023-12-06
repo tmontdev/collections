@@ -1,13 +1,13 @@
-package collections
+package lists
 
 import (
 	"encoding/json"
 	"sync"
 )
 
-// SafeList is a dynamically-sized and thread-safe implementation of List.
+// SafeList is a dynamically-sized and thread-safe implementation of IList.
 type SafeList[T any] struct {
-	l *SimpleList[T]
+	l *List[T]
 	sync.Mutex
 }
 
@@ -77,17 +77,17 @@ func (s *SafeList[T]) Elements() []T {
 }
 
 // Push add the given elements in the SafeList, and then returns itself.
-func (s *SafeList[T]) Push(elements ...T) List[T] {
+func (s *SafeList[T]) Push(elements ...T) IList[T] {
 	return s.self(func() any {
 		return s.l.Push(elements...)
 	})
 }
 
 // Clone returns an identical SafeList from the original.
-func (s *SafeList[T]) Clone() List[T] {
-	return &SafeList[T]{l: protect[List[T], T](s, func() List[T] {
+func (s *SafeList[T]) Clone() IList[T] {
+	return &SafeList[T]{l: protect[IList[T], T](s, func() IList[T] {
 		return s.l.Clone()
-	}).(*SimpleList[T])}
+	}).(*List[T])}
 }
 
 // FirstElement returns the first element in the SafeList.
@@ -170,25 +170,25 @@ func (s *SafeList[T]) LastElementWhere(handler Predicate[T]) T {
 	})
 }
 
-// IndexWhere returns a SimpleList[int] for all element index which satisfies the predicate.
-// If no element satisfies the predicate, an empty SimpleList will be returned.
-func (s *SafeList[T]) IndexWhere(handler Predicate[T]) List[int] {
-	return protect[List[int], T](s, func() List[int] {
+// IndexWhere returns a List[int] for all element index which satisfies the predicate.
+// If no element satisfies the predicate, an empty List will be returned.
+func (s *SafeList[T]) IndexWhere(handler Predicate[T]) IList[int] {
+	return protect[IList[int], T](s, func() IList[int] {
 		return s.l.IndexWhere(handler)
 	})
 }
 
-// Where returns a SimpleList with all the elements which satisfies the predicate.
-// If no element satisfies the predicate, an empty SimpleList will be returned.
-func (s *SafeList[T]) Where(handler Predicate[T]) List[T] {
-	return protect[List[T], T](s, func() List[T] {
+// Where returns a List with all the elements which satisfies the predicate.
+// If no element satisfies the predicate, an empty List will be returned.
+func (s *SafeList[T]) Where(handler Predicate[T]) IList[T] {
+	return protect[IList[T], T](s, func() IList[T] {
 		return s.l.Where(handler)
 	})
 }
 
-// HashMap iterates over the element of the SafeList calling Mapper, and return a new SimpleList with the results.
-func (s *SafeList[T]) Map(handler Mapper[T]) List[any] {
-	return protect[List[any], T](s, func() List[any] {
+// HashMap iterates over the element of the SafeList calling Mapper, and return a new List with the results.
+func (s *SafeList[T]) Map(handler Mapper[T]) IList[any] {
+	return protect[IList[any], T](s, func() IList[any] {
 		return s.l.Map(handler)
 	})
 }
@@ -201,51 +201,51 @@ func (s *SafeList[T]) Reduce(reducer Reducer[T], accumulator any) any {
 	})
 }
 
-// Every returns true if every element in the List satisfies the predicate.
+// Every returns true if every element in the IList satisfies the predicate.
 func (s *SafeList[T]) Every(handler Predicate[T]) bool {
 	return protect[bool, T](s, func() bool {
 		return s.l.Every(handler)
 	})
 }
 
-// Some returns true if at least one element in the List satisfies the predicate.
+// Some returns true if at least one element in the IList satisfies the predicate.
 func (s *SafeList[T]) Some(handler Predicate[T]) bool {
 	return protect[bool, T](s, func() bool {
 		return s.l.Some(handler)
 	})
 }
 
-// None returns true no element in the List satisfy the predicate.
+// None returns true no element in the IList satisfy the predicate.
 func (s *SafeList[T]) None(handler Predicate[T]) bool {
 	return protect[bool, T](s, func() bool {
 		return s.l.None(handler)
 	})
 }
 
-// Pop removes the last element from the List and returns itself.
-func (s *SafeList[T]) Pop() List[T] {
+// Pop removes the last element from the IList and returns itself.
+func (s *SafeList[T]) Pop() IList[T] {
 	return s.self(func() any {
 		return s.l.Pop()
 	})
 }
 
-// Shift removes the first element from the List and then returns itself.
-func (s *SafeList[T]) Shift() List[T] {
+// Shift removes the first element from the IList and then returns itself.
+func (s *SafeList[T]) Shift() IList[T] {
 	return s.self(func() any {
 		return s.l.Shift()
 	})
 }
 
 // Set sets the given element at the given index, and then returns itself.
-func (s *SafeList[T]) Set(index int, element T) List[T] {
+func (s *SafeList[T]) Set(index int, element T) IList[T] {
 	return s.self(func() any {
 		return s.l.Set(index, element)
 	})
 }
 
-// Interval returns a new SimpleList with all elements between the *from* and *to* indexes.
-func (s *SafeList[T]) Interval(from, to int) List[T] {
-	return protect[List[T], T](s, func() List[T] {
+// Interval returns a new List with all elements between the *from* and *to* indexes.
+func (s *SafeList[T]) Interval(from, to int) IList[T] {
+	return protect[IList[T], T](s, func() IList[T] {
 		return s.l.Interval(from, to)
 	})
 }
@@ -257,7 +257,7 @@ func (s *SafeList[T]) String() string {
 	})
 }
 
-// Join returns the string representation of each element in the List, separated by the given separator
+// Join returns the string representation of each element in the IList, separated by the given separator
 func (s *SafeList[T]) Join(separator string) string {
 	return protect[string, T](s, func() string {
 		return s.l.Join(separator)
@@ -265,25 +265,25 @@ func (s *SafeList[T]) Join(separator string) string {
 }
 
 // Sort receives a Sorter function to sort its elements, and returns itself after sorted.
-func (s *SafeList[T]) Sort(sorter Sorter[T]) List[T] {
+func (s *SafeList[T]) Sort(sorter Sorter[T]) IList[T] {
 	return s.self(func() any {
 		return s.l.Sort(sorter)
 	})
 }
 
 // Clear removes all elements from the SafeList, making it empty, and then returns itself.
-func (s *SafeList[T]) Clear() List[T] {
+func (s *SafeList[T]) Clear() IList[T] {
 	return s.self(func() any {
 		return s.l.Clear()
 	})
 }
 
-// IsDynamicallySized returns true, as SafeList is a dynamically-sized implementation of List
+// IsDynamicallySized returns true, as SafeList is a dynamically-sized implementation of IList
 func (s *SafeList[T]) IsDynamicallySized() bool {
 	return true
 }
 
-// IsThreadSafe returns true, as SafeList is a thread-safe implementation of List
+// IsThreadSafe returns true, as SafeList is a thread-safe implementation of IList
 func (s *SafeList[T]) IsThreadSafe() bool {
 	return true
 }

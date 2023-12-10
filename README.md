@@ -149,7 +149,7 @@ func lettersFrom(word string) lists.IList[rune] {
 
 // returns a list of words, which is the spelling of the given word
 func spell(word string) lists.IList[string] {
-	spelling := collections.NewList[string]()
+	spelling := lists.NewList[string]()
 	spellingReference := customSpelling()
 	letters := lettersFrom(word)
 	// letters is a List of runes (*[]rune).
@@ -163,7 +163,7 @@ func spell(word string) lists.IList[string] {
 }
 
 func main() {
-	words := collections.NewList[string]("foo", "bar", "berserk")
+	words := lists.NewList[string]("foo", "bar", "berserk")
 	// we may easily add, remove, and filter words
 	// lets and some harder words to spell
 	words.Push("bumfuzzle", "cattywampus", "Kakorrhaphiophobia")

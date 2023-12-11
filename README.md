@@ -138,7 +138,7 @@ import (
 // our official alphabet spelling
 func customSpelling() maps.IMap[rune, string] {
 	// uses old code here
-	return standardRadioAlphabet().Merge(standardRadioNumbers(), false).Merge(preferredRadioSpelling(), true)
+	return standardRadioAlphabet().Complement(standardRadioNumbers()).SetFrom(preferredRadioSpelling())
 }
 
 // returns a list of runes, which is the letters of the given word
